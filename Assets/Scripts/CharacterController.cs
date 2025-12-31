@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class CharacterSelector : MonoBehaviour
+public class CharacterController : MonoBehaviour
 {
     // This method is called when a character is selected
     public void SelectCharacter(int heroId)
