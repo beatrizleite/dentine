@@ -34,8 +34,28 @@ public class MenuManager : MonoBehaviour
         screenOptions.SetActive(true);
     }
 
-    public void PlayGame()
+    public void GoToCharacterSelection()
+    {
+        SceneManager.LoadScene("Screen_CharacterSelect");
+    }
+
+    public void GoToIntro()
+    {
+        SceneManager.LoadScene("Screen_Intro");
+    }
+
+    public void GoToLevel1()
     {
         SceneManager.LoadScene("Level1");
+    }
+
+    public void GoToLevel2()
+    {
+        SceneManager.LoadScene("Level2");
+    }
+
+    public void GoToLevel3()
+    {
+        SceneManager.LoadScene("Level3");
     }
 }
