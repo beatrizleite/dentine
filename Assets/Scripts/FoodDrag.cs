@@ -3,6 +3,7 @@ using UnityEngine;
 public class FoodDrag : MonoBehaviour
 {
     private Vector3 startPosition;
+    private Vector3 originalScale;
     private bool isDragging = false;
     private bool isLocked = false;
 
@@ -12,6 +13,7 @@ public class FoodDrag : MonoBehaviour
     void Start()
     {
         startPosition = transform.position;
+        originalScale = transform.localScale;
         mySprite = GetComponent<SpriteRenderer>();
     }
 
@@ -27,7 +29,7 @@ public class FoodDrag : MonoBehaviour
         Vector3 pointerWorldPos = GetPointerWorldPosition();
         offset = transform.position - pointerWorldPos;
 
-        transform.localScale *= 1.2f;
+        transform.localScale = originalScale * 1.2f;
     }
 
     void OnMouseDrag()
@@ -47,7 +49,7 @@ public class FoodDrag : MonoBehaviour
         if (!isDragging) return;
 
         isDragging = false;
-        transform.localScale /= 1.2f;
+        transform.localScale = originalScale;
         CheckDrop();
     }
 
@@ -70,7 +72,7 @@ public class FoodDrag : MonoBehaviour
                 {
                     isDragging = true;
                     offset = transform.position - touchWorldPos;
-                    transform.localScale *= 1.2f;
+                    transform.localScale = originalScale * 1.2f;
                 }
                 break;
 
@@ -90,7 +92,7 @@ public class FoodDrag : MonoBehaviour
                 if (isDragging)
                 {
                     isDragging = false;
-                    transform.localScale /= 1.2f;
+                    transform.localScale = originalScale;
                     CheckDrop();
                 }
                 break;
@@ -151,7 +153,11 @@ public class FoodDrag : MonoBehaviour
     void Success(Vector3 targetPos)
     {
         transform.position = targetPos;
+
         Destroy(gameObject, 0.2f);
+
+        if (mySprite != null)
+            mySprite.color = Color.green;
 
         if (Level1Manager.instance != null)
         {
