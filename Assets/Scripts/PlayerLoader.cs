@@ -2,30 +2,30 @@ using UnityEngine;
 
 public class PlayerLoader : MonoBehaviour
 {
-    public Sprite spriteChar1;  // 0
-    public Sprite spriteChar2;  // 1
-    public Sprite spriteChar3;  // 2
+    public Sprite spriteChar1;
+    public Sprite spriteChar2;
+    public Sprite spriteChar3;
 
-    private SpriteRenderer meuRender;
+    private SpriteRenderer myRender;
 
     void Start()
     {
-        meuRender = GetComponent<SpriteRenderer>();
+        myRender = GetComponent<SpriteRenderer>();
 
         // Goes to the PlayerPrefs to get the chosen character
         int choice = PlayerPrefs.GetInt("characterChosen");
 
         if (choice == 0)
         {
-            meuRender.sprite = spriteChar1;
+            myRender.sprite = spriteChar1;
         }
         else if (choice == 1)
         {
-            meuRender.sprite = spriteChar2;
+            myRender.sprite = spriteChar2;
         }
         else
         {
-            meuRender.sprite = spriteChar3;
+            myRender.sprite = spriteChar3;
         }
     }
 }
