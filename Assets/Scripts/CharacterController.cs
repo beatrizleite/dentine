@@ -10,8 +10,8 @@ public class CharacterController : MonoBehaviour
     public GameObject btnAdvance;
     public string nextSceneName = "Level1";
 
-    // Variable to temporarily store the selected character
     private int selectedId = -1; 
+    private float scaleFactor = 1.1f;
 
     void Start()
     {
@@ -42,18 +42,14 @@ public class CharacterController : MonoBehaviour
         {
             if (charOpt.id == id)
             {
-                // 1. Turn on the light
                 if(charOpt.lightObject != null) charOpt.lightObject.SetActive(true);
                 
-                // 2. Increase the size (Effect "Come to the front")
-                charOpt.characterTransform.localScale = charOpt.initialScale * 1.2f;
+                charOpt.characterTransform.localScale = charOpt.initialScale * scaleFactor;
             }
             else
             {
-                // 1. Turn off the light
                 if(charOpt.lightObject != null) charOpt.lightObject.SetActive(false);
                 
-                // 2. Return to normal size
                 charOpt.characterTransform.localScale = charOpt.initialScale;
             }
         }
