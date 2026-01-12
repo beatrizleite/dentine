@@ -11,7 +11,7 @@ public class CharacterController : MonoBehaviour
     public string nextSceneName = "Level1";
 
     private int selectedId = -1; 
-    private float scaleFactor = 1.1f;
+    private readonly float scaleFactor = 1.1f;
 
     void Start()
     {
