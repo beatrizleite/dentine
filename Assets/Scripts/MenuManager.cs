@@ -1,16 +1,28 @@
 using UnityEngine;
-using UnityEngine.SceneManagement; 
+using UnityEngine.SceneManagement;
+using UnityEngine.Video;
 
 public class MenuManager : MonoBehaviour
 {
     [Header("Screens")]
     public GameObject screenMain;     
     public GameObject screenLevels;   
-    public GameObject screenOptions;  
+    public GameObject screenOptions;
+
+    [Header("Video Intro")]
+    public GameObject screenVideo;
+    public VideoPlayer videoPlayer;
 
     void Start()
     {
         GoHome(); 
+
+        if (screenVideo != null) screenVideo.SetActive(false);
+
+        if (videoPlayer != null)
+        {
+            videoPlayer.loopPointReached += OnVideoFinished;
+        }
     }
 
     public void GoHome()
@@ -18,6 +30,7 @@ public class MenuManager : MonoBehaviour
         screenMain.SetActive(true);
         screenLevels.SetActive(false);
         screenOptions.SetActive(false);
+        if(screenVideo != null) screenVideo.SetActive(false);
     }
 
     public void GoToLevels()
@@ -41,7 +54,14 @@ public class MenuManager : MonoBehaviour
 
     public void GoToIntro()
     {
-        SceneManager.LoadScene("Screen_Intro");
+        screenMain.SetActive(false);
+        screenVideo.SetActive(true);
+        videoPlayer.Play();
+    }
+
+    void OnVideoFinished(VideoPlayer vp)
+    {
+        GoToCharacterSelection();
     }
 
     public void GoToLevel1()
