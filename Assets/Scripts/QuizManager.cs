@@ -7,12 +7,24 @@ using System.Collections;
 public class QuizManager : MonoBehaviour
 {
     [System.Serializable]
+    public class QuizOption
+    {
+        public enum OptionType { Text, Image, Both }
+        
+        public OptionType type = OptionType.Text;
+        public string text;
+        public Sprite image;
+    }
+
+    [System.Serializable]
     public class QuizQuestion
     {
         public string questionText;
         public AudioClip questionAudio;
-        public string[] options; // 2-4 options
-        public int correctAnswerIndex;
+        [Header("Always 2 Options")]
+        public QuizOption option1;
+        public QuizOption option2;
+        public int correctAnswerIndex; // 0 = option1, 1 = option2
     }
 
     [System.Serializable]
@@ -20,22 +32,23 @@ public class QuizManager : MonoBehaviour
     {
         public string levelName; // "Level1", "Level2", "Level3"
         public QuizQuestion[] questions;
-        public string returnScene; // Scene to return to when back is pressed
-        public string nextScene; // Scene to load after quiz completion
+        public string returnScene;
+        public string nextScene;
     }
 
     [Header("UI References")]
     public TextMeshProUGUI questionText;
     public Button audioButton;
     public Button backButton;
-    public GameObject[] optionButtons; // Array to hold 2-4 option buttons
+    public GameObject option1Button;
+    public GameObject option2Button;
     public GameObject resultsPanel;
     public TextMeshProUGUI resultsText;
-    public Image[] starImages; // 3 star images
+    public Image[] starImages;
     public Button continueButton;
     
     [Header("All Level Quiz Data")]
-    public LevelQuizData[] levelQuizzes; // Array of 3 level quizzes
+    public LevelQuizData[] levelQuizzes;
     
     [Header("Visual Feedback")]
     public Color wrongAnswerColor = Color.red;
@@ -50,7 +63,6 @@ public class QuizManager : MonoBehaviour
     private bool isProcessingAnswer = false;
     private LevelQuizData currentLevelData;
 
-    // Static variable to pass level info between scenes
     public static string currentLevel = "Level1";
 
     void Start()
@@ -62,14 +74,12 @@ public class QuizManager : MonoBehaviour
         
         resultsPanel.SetActive(false);
         
-        // Load the appropriate quiz based on currentLevel
         LoadLevelQuiz(currentLevel);
         LoadQuestion(currentQuestionIndex);
     }
 
     void LoadLevelQuiz(string levelName)
     {
-        // Find the matching level quiz data
         foreach (LevelQuizData levelData in levelQuizzes)
         {
             if (levelData.levelName == levelName)
@@ -80,7 +90,6 @@ public class QuizManager : MonoBehaviour
             }
         }
         
-        // Fallback to first level if not found
         if (levelQuizzes.Length > 0)
         {
             currentLevelData = levelQuizzes[0];
@@ -105,30 +114,78 @@ public class QuizManager : MonoBehaviour
         QuizQuestion question = currentLevelData.questions[index];
         questionText.text = question.questionText;
 
-        for (int i = 0; i < optionButtons.Length; i++)
-        {
-            if (i < question.options.Length)
-            {
-                optionButtons[i].SetActive(true);
-                TextMeshProUGUI buttonText = optionButtons[i].GetComponentInChildren<TextMeshProUGUI>();
-                buttonText.text = question.options[i];
-                
-                // Reset button color
-                Image buttonImage = optionButtons[i].GetComponent<Image>();
-                buttonImage.color = Color.white;
-                
-                Button btn = optionButtons[i].GetComponent<Button>();
-                btn.onClick.RemoveAllListeners();
-                int optionIndex = i;
-                btn.onClick.AddListener(() => OnOptionSelected(optionIndex));
-            }
-            else
-            {
-                optionButtons[i].SetActive(false);
-            }
-        }
+        // Setup option 1
+        SetupOptionButton(option1Button, question.option1);
+        ResetButtonColor(option1Button);
+        Button btn1 = option1Button.GetComponent<Button>();
+        btn1.onClick.RemoveAllListeners();
+        btn1.onClick.AddListener(() => OnOptionSelected(0));
+
+        // Setup option 2
+        SetupOptionButton(option2Button, question.option2);
+        ResetButtonColor(option2Button);
+        Button btn2 = option2Button.GetComponent<Button>();
+        btn2.onClick.RemoveAllListeners();
+        btn2.onClick.AddListener(() => OnOptionSelected(1));
         
         isProcessingAnswer = false;
+    }
+
+    void SetupOptionButton(GameObject button, QuizOption option)
+    {
+        TextMeshProUGUI buttonText = button.GetComponentInChildren<TextMeshProUGUI>();
+        Image buttonImage = button.transform.Find("OptionImage")?.GetComponent<Image>();
+
+        switch (option.type)
+        {
+            case QuizOption.OptionType.Text:
+                if (buttonText != null)
+                {
+                    buttonText.gameObject.SetActive(true);
+                    buttonText.text = option.text;
+                }
+                if (buttonImage != null)
+                {
+                    buttonImage.gameObject.SetActive(false);
+                }
+                break;
+
+            case QuizOption.OptionType.Image:
+                if (buttonText != null)
+                {
+                    buttonText.gameObject.SetActive(false);
+                }
+                if (buttonImage != null)
+                {
+                    buttonImage.gameObject.SetActive(true);
+                    buttonImage.sprite = option.image;
+                    buttonImage.preserveAspect = true;
+                }
+                break;
+
+            case QuizOption.OptionType.Both:
+                if (buttonText != null)
+                {
+                    buttonText.gameObject.SetActive(true);
+                    buttonText.text = option.text;
+                }
+                if (buttonImage != null)
+                {
+                    buttonImage.gameObject.SetActive(true);
+                    buttonImage.sprite = option.image;
+                    buttonImage.preserveAspect = true;
+                }
+                break;
+        }
+    }
+
+    void ResetButtonColor(GameObject button)
+    {
+        Image buttonImage = button.GetComponent<Image>();
+        if (buttonImage != null)
+        {
+            buttonImage.color = Color.white;
+        }
     }
 
     void PlayQuestionAudio()
@@ -161,17 +218,16 @@ public class QuizManager : MonoBehaviour
         else
         {
             wrongAnswers++;
-            StartCoroutine(ShowWrongAnswerFeedback(selectedIndex));
+            GameObject wrongButton = selectedIndex == 0 ? option1Button : option2Button;
+            StartCoroutine(ShowWrongAnswerFeedback(wrongButton));
         }
     }
 
-    IEnumerator ShowWrongAnswerFeedback(int wrongButtonIndex)
+    IEnumerator ShowWrongAnswerFeedback(GameObject wrongButton)
     {
-        GameObject wrongButton = optionButtons[wrongButtonIndex];
         Image buttonImage = wrongButton.GetComponent<Image>();
         buttonImage.color = wrongAnswerColor;
         
-        // Shake animation
         Vector3 originalPos = wrongButton.transform.localPosition;
         float elapsed = 0f;
         
@@ -186,7 +242,6 @@ public class QuizManager : MonoBehaviour
         }
         
         wrongButton.transform.localPosition = originalPos;
-        
         yield return new WaitForSeconds(wrongAnswerDelay);
         
         currentQuestionIndex++;
@@ -198,15 +253,11 @@ public class QuizManager : MonoBehaviour
         resultsPanel.SetActive(true);
         
         int totalQuestions = currentLevelData.questions.Length;
-        resultsText.text = $"Correct: {correctAnswers}\nWrong: {wrongAnswers}";
+        resultsText.text = $"Respostas Corretas: {correctAnswers}\nRespostas Erradas: {wrongAnswers}";
         
-        // Calculate stars (3 stars = all correct, 2 stars = 70%+, 1 star = 40%+)
         int stars = CalculateStars(correctAnswers, totalQuestions);
-        
-        // Save stars with level-specific key
         SaveStars(stars);
         
-        // Display stars
         for (int i = 0; i < starImages.Length; i++)
         {
             starImages[i].enabled = i < stars;
@@ -228,7 +279,6 @@ public class QuizManager : MonoBehaviour
         string saveKey = currentLevelData.levelName + "_Stars";
         int previousStars = PlayerPrefs.GetInt(saveKey, 0);
         
-        // Only save if new score is better
         if (stars > previousStars)
         {
             PlayerPrefs.SetInt(saveKey, stars);
@@ -252,8 +302,7 @@ public class QuizManager : MonoBehaviour
         SceneManager.LoadScene(currentLevelData.returnScene);
     }
     
-    // Call this from your level scenes before loading the quiz
-    public static void LoadQuizForLevel(string levelName, string quizSceneName = "QuizScene")
+    public static void LoadQuizForLevel(string levelName, string quizSceneName = "Quiz")
     {
         currentLevel = levelName;
         SceneManager.LoadScene(quizSceneName);

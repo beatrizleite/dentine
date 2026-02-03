@@ -645,6 +645,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Level1Manager
   spawnPoint: {fileID: 900473943}
+  levelID: Level1
+  quizSceneName: Quiz
   allFoods:
   - {fileID: 6484136624863257524, guid: 09d9402ed254b4b14954e54348db3e65, type: 3}
   - {fileID: 7147767855211817046, guid: cd954fd3174cd4299b27b4fe7cf6f3da, type: 3}
