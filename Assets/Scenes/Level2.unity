@@ -3697,7 +3697,7 @@ MonoBehaviour:
   hintArrow: {fileID: 0}
   levelID: Level2
   quizSceneName: Quiz
-  shakeDurationNeeded: 3
+  shakeDurationNeeded: 1
   shakeThreshold: 2.5
   hintManager: {fileID: 2108494240}
 --- !u!114 &2108494240
