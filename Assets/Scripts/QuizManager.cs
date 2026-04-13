@@ -69,7 +69,6 @@ public class QuizManager : MonoBehaviour
     {
         audioSource = gameObject.AddComponent<AudioSource>();
         audioButton.onClick.AddListener(PlayQuestionAudio);
-        backButton.onClick.AddListener(GoBack);
         continueButton.onClick.AddListener(ContinueToNextLevel);
         
         resultsPanel.SetActive(false);
