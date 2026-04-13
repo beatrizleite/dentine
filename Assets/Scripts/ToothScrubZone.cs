@@ -3,11 +3,12 @@ using UnityEngine;
 [RequireComponent(typeof(Collider2D))]
 public class ToothScrubZone : MonoBehaviour
 {
-    [Tooltip("World-units of scrubbing needed to clean this tooth")]
-    public float scrubThreshold = 1.2f;
+    [Header("Scrub Settings")]
+    [Tooltip("Total seconds of pressing to fully clean this tooth")]
+    public float scrubDuration = 1.2f;
 
-    [Tooltip("Foam sprites shown progressively: [0]=33% [1]=66% [2]=100%")]
-    public Sprite[] foamSprites;
+    [Tooltip("The full foam sprite (foam_2) — fades in from 0 to 1 as you scrub")]
+    public Sprite foamSprite;
 
     // ── statics ───────────────────────────────────────────────────────────
     private static int s_total   = 0;
@@ -19,17 +20,23 @@ public class ToothScrubZone : MonoBehaviour
     // ── per-zone ──────────────────────────────────────────────────────────
     private Collider2D     col;
     private SpriteRenderer foamSR;
-    private float          accum     = 0f;
+    private float          accumTime = 0f;
     private bool           cleaned   = false;
-    private Vector3        lastPos;
-    private bool           wasInside = false;
-    private int            lastStep  = -1;
+    private Camera         mainCam;
 
     void OnEnable()  { s_total++; }
     void OnDisable() { if (s_total > 0) s_total--; }
 
-    void Awake()  { col = GetComponent<Collider2D>(); }
-    void Start()  { BuildFoamChild(); }
+    void Awake()
+    {
+        col     = GetComponent<Collider2D>();
+        mainCam = Camera.main;
+    }
+
+    void Start()
+    {
+        BuildFoamChild();
+    }
 
     void BuildFoamChild()
     {
@@ -42,23 +49,25 @@ public class ToothScrubZone : MonoBehaviour
 
         foamSR = foamGO.AddComponent<SpriteRenderer>();
         foamSR.sortingOrder = 4;
-        foamGO.SetActive(false);
+        foamSR.sprite = foamSprite;
+
+        // Size to collider height, preserve aspect ratio
+        FitToCollider();
+
+        // Start fully transparent but VISIBLE — fades in as user scrubs
+        SetAlpha(0f);
+        foamGO.SetActive(true);
     }
 
-    // Scale foam UNIFORMLY so its HEIGHT matches the collider height.
-    // Width follows the sprite's own aspect ratio — no distortion.
-    void FitFoamToCollider(Sprite sp)
+    void FitToCollider()
     {
-        if (sp == null || foamSR == null) return;
-        foamSR.sprite = sp;
-
+        if (foamSR == null || foamSR.sprite == null) return;
         var box = col as BoxCollider2D;
         float targetH = box != null ? box.size.y : 0.6f;
-        float sprH    = sp.bounds.size.y;
+        float sprH    = foamSR.sprite.bounds.size.y;
         if (sprH <= 0f) return;
-
-        float scale = targetH / sprH;
-        foamSR.transform.localScale = new Vector3(scale, scale, 1f);
+        float s = targetH / sprH;
+        foamSR.transform.localScale = new Vector3(s, s, 1f);
     }
 
     void Update()
@@ -71,64 +80,48 @@ public class ToothScrubZone : MonoBehaviour
 
         if (inside)
         {
-            if (wasInside)
-            {
-                float delta = Vector3.Distance(worldPos, lastPos);
-                if (delta > 0.001f)
-                {
-                    accum += delta;
-                    if (Level2Manager.instance != null) Level2Manager.instance.OnScrubActivity();
-                    UpdateFoam();
-                    if (accum >= scrubThreshold)
-                        MarkCleaned();
-                }
-            }
-            lastPos = worldPos;
+            accumTime += Time.deltaTime;
+
+            // Alpha goes from 0 → 1 linearly over scrubDuration
+            float alpha = Mathf.Clamp01(accumTime / scrubDuration);
+            SetAlpha(alpha);
+
+            if (Level2Manager.instance != null)
+                Level2Manager.instance.OnScrubActivity();
+
+            if (accumTime >= scrubDuration)
+                MarkCleaned();
         }
-        wasInside = inside;
-    }
-
-    void UpdateFoam()
-    {
-        if (foamSprites == null || foamSprites.Length == 0) return;
-
-        float pct  = Mathf.Clamp01(accum / scrubThreshold);
-        int   step = Mathf.Min(Mathf.FloorToInt(pct * foamSprites.Length), foamSprites.Length - 1);
-        if (step == lastStep) return;
-        lastStep = step;
-
-        Sprite sp = foamSprites[step];
-        if (sp == null) return;
-
-        FitFoamToCollider(sp);
-        foamSR.gameObject.SetActive(true);
-        Color c = foamSR.color;
-        c.a = 0.85f + step * 0.075f;
-        foamSR.color = c;
     }
 
     void MarkCleaned()
     {
         cleaned = true;
-        if (foamSprites != null && foamSprites.Length > 0)
-        {
-            var sp = foamSprites[foamSprites.Length - 1];
-            FitFoamToCollider(sp);
-            foamSR.gameObject.SetActive(true);
-            Color c = foamSR.color; c.a = 1f; foamSR.color = c;
-        }
+        SetAlpha(1f);
+
         s_cleaned++;
         float progress = s_total > 0 ? (float)s_cleaned / s_total : 1f;
         if (Level2Manager.instance != null)
             Level2Manager.instance.OnCleaningProgress(progress);
     }
 
+    void SetAlpha(float a)
+    {
+        if (foamSR == null) return;
+        Color c = foamSR.color;
+        c.a = a;
+        foamSR.color = c;
+    }
+
     Vector3 GetPointerWorld()
     {
+        if (mainCam == null) mainCam = Camera.main;
+        if (mainCam == null) return Vector3.zero;
         Vector2 screen = Input.touchCount > 0
             ? (Vector2)Input.GetTouch(0).position
             : (Vector2)Input.mousePosition;
-        Vector3 w = Camera.main.ScreenToWorldPoint(screen);
+        Vector3 w = mainCam.ScreenToWorldPoint(
+            new Vector3(screen.x, screen.y, Mathf.Abs(mainCam.transform.position.z)));
         w.z = 0f;
         return w;
     }
