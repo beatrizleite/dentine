@@ -2250,50 +2250,50 @@ MonoBehaviour:
     nextScene: Level2
   - levelName: Level2
     questions:
-    - questionText: O que faz bem aos dentes?
+    - questionText: Quantas vezes devemos escovar os dentes por dia?
       questionAudio: {fileID: 0}
       option1:
-        type: 1
-        text: "Doces e Rebu\xE7ados"
-        image: {fileID: 21300000, guid: 47ba96e11d58743fc939bb7db0bca169, type: 3}
+        type: 0
+        text: Uma vez
+        image: {fileID: 0}
       option2:
-        type: 1
-        text: Frutas e Vegetais
-        image: {fileID: 21300000, guid: dd9e790704dda4a878b763f5d9aabd11, type: 3}
+        type: 0
+        text: Duas ou mais
+        image: {fileID: 0}
       correctAnswerIndex: 1
-    - questionText: "O que faz pode causar c\xE1ries?"
+    - questionText: Quanto tempo devemos escovar os dentes?
       questionAudio: {fileID: 0}
       option1:
-        type: 1
-        text: 'Comer muitos doces '
-        image: {fileID: 6613942966907892568, guid: d2721912df20142398befcddbef033cb, type: 3}
+        type: 0
+        text: 30 segundos
+        image: {fileID: 0}
       option2:
-        type: 1
-        text: "Comer ma\xE7\xE3s"
-        image: {fileID: -7832214784768987486, guid: a16666eacfadd4c9d878e61088a6c815, type: 3}
-      correctAnswerIndex: 0
-    - questionText: "Qual bebida \xE9 melhor para os dentes?"
-      questionAudio: {fileID: 0}
-      option1:
-        type: 1
-        text: "\xC1gua"
-        image: {fileID: 8509550459451208454, guid: 82a46a22756324eadb82b41213b81b25, type: 3}
-      option2:
-        type: 1
-        text: Refrigerante
-        image: {fileID: -3289453322174803879, guid: 6d1f36b15442f4b76bb8281bb40dbf19, type: 3}
-      correctAnswerIndex: 0
-    - questionText: "O que acontece quando comemos alimentos saud\xE1veis?"
-      questionAudio: {fileID: 0}
-      option1:
-        type: 1
-        text: Dente Fraco
-        image: {fileID: 6402896907047545023, guid: 6b0b798f5c64e4570ae6f8ca0cf7db30, type: 3}
-      option2:
-        type: 1
-        text: "Dente Saud\xE1vel"
-        image: {fileID: 5275257091155199138, guid: 7b8b1fb832be4412398f11614414b6ca, type: 3}
+        type: 0
+        text: 2 minutos
+        image: {fileID: 0}
       correctAnswerIndex: 1
+    - questionText: O que devemos usar para escovar os dentes?
+      questionAudio: {fileID: 0}
+      option1:
+        type: 0
+        text: Escova e pasta
+        image: {fileID: 0}
+      option2:
+        type: 0
+        text: Toalha
+        image: {fileID: 0}
+      correctAnswerIndex: 0
+    - questionText: "Devemos escovar a l\xEDngua tamb\xE9m?"
+      questionAudio: {fileID: 0}
+      option1:
+        type: 0
+        text: Sim
+        image: {fileID: 0}
+      option2:
+        type: 0
+        text: "N\xE3o"
+        image: {fileID: 0}
+      correctAnswerIndex: 0
     returnScene: DentineMenu
     nextScene: Level3
   wrongAnswerColor: {r: 1, g: 0, b: 0, a: 1}
