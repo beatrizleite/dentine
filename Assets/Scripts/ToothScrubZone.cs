@@ -4,10 +4,7 @@ using UnityEngine;
 public class ToothScrubZone : MonoBehaviour
 {
     [Header("Scrub Settings")]
-    [Tooltip("Total seconds of pressing to fully clean this tooth")]
     public float scrubDuration = 1.2f;
-
-    [Tooltip("The full foam sprite (foam_2) — fades in from 0 to 1 as you scrub")]
     public Sprite foamSprite;
 
     // ── statics ───────────────────────────────────────────────────────────
@@ -22,41 +19,29 @@ public class ToothScrubZone : MonoBehaviour
     private SpriteRenderer foamSR;
     private float          accumTime = 0f;
     private bool           cleaned   = false;
-    private Camera         mainCam;
 
     void OnEnable()  { s_total++; }
     void OnDisable() { if (s_total > 0) s_total--; }
 
-    void Awake()
-    {
-        col     = GetComponent<Collider2D>();
-        mainCam = Camera.main;
-    }
-
-    void Start()
-    {
-        BuildFoamChild();
-    }
+    void Awake() { col = GetComponent<Collider2D>(); }
+    void Start() { BuildFoamChild(); }
 
     void BuildFoamChild()
     {
         var old = transform.Find("Foam");
         if (old != null) Destroy(old.gameObject);
+        if (foamSprite == null) return;
 
-        var foamGO = new GameObject("Foam");
-        foamGO.transform.SetParent(transform, false);
-        foamGO.transform.localPosition = Vector3.zero;
+        var go = new GameObject("Foam");
+        go.transform.SetParent(transform, false);
+        go.transform.localPosition = Vector3.zero;
 
-        foamSR = foamGO.AddComponent<SpriteRenderer>();
+        foamSR = go.AddComponent<SpriteRenderer>();
+        foamSR.sortingLayerName = "Default";
         foamSR.sortingOrder = 4;
         foamSR.sprite = foamSprite;
-
-        // Size to collider height, preserve aspect ratio
         FitToCollider();
-
-        // Start fully transparent but VISIBLE — fades in as user scrubs
         SetAlpha(0f);
-        foamGO.SetActive(true);
     }
 
     void FitToCollider()
@@ -74,55 +59,43 @@ public class ToothScrubZone : MonoBehaviour
     {
         if (cleaned) return;
 
-        bool pressing    = Input.GetMouseButton(0) || Input.touchCount > 0;
-        Vector3 worldPos = GetPointerWorld();
-        bool inside      = pressing && col != null && col.OverlapPoint(worldPos);
+        // Scrubbing only happens when the brush head is inside this zone
+        var brush = ToothbrushController.instance;
+        bool inside = brush != null && brush.IsActive && BrushHeadInside(brush.BrushHeadWorld);
 
         if (inside)
         {
             accumTime += Time.deltaTime;
-
-            // Alpha goes from 0 → 1 linearly over scrubDuration
-            float alpha = Mathf.Clamp01(accumTime / scrubDuration);
-            SetAlpha(alpha);
-
-            if (Level2Manager.instance != null)
-                Level2Manager.instance.OnScrubActivity();
-
-            if (accumTime >= scrubDuration)
-                MarkCleaned();
+            SetAlpha(Mathf.Clamp01(accumTime / scrubDuration));
+            if (Level2Manager.instance != null) Level2Manager.instance.OnScrubActivity();
+            if (accumTime >= scrubDuration) MarkCleaned();
         }
+    }
+
+    // Direct transform-based AABB — no Physics2D latency
+    bool BrushHeadInside(Vector3 p)
+    {
+        var box = col as BoxCollider2D;
+        if (box == null) return false;
+        Vector2 wc = transform.TransformPoint(box.offset);
+        Vector3 ls = transform.lossyScale;
+        float hx = box.size.x * 0.5f * Mathf.Abs(ls.x);
+        float hy = box.size.y * 0.5f * Mathf.Abs(ls.y);
+        return p.x >= wc.x - hx && p.x <= wc.x + hx &&
+               p.y >= wc.y - hy && p.y <= wc.y + hy;
     }
 
     void MarkCleaned()
     {
-        cleaned = true;
-        SetAlpha(1f);
-
+        cleaned = true; SetAlpha(1f);
         s_cleaned++;
-        float progress = s_total > 0 ? (float)s_cleaned / s_total : 1f;
-        if (Level2Manager.instance != null)
-            Level2Manager.instance.OnCleaningProgress(progress);
+        float prog = s_total > 0 ? (float)s_cleaned / s_total : 1f;
+        if (Level2Manager.instance != null) Level2Manager.instance.OnCleaningProgress(prog);
     }
 
     void SetAlpha(float a)
     {
         if (foamSR == null) return;
-        Color c = foamSR.color;
-        c.a = a;
-        foamSR.color = c;
-    }
-
-    Vector3 GetPointerWorld()
-    {
-        if (mainCam == null) mainCam = Camera.main;
-        if (mainCam == null) return Vector3.zero;
-        Vector2 screen = Input.touchCount > 0
-            ? (Vector2)Input.GetTouch(0).position
-            : (Vector2)Input.mousePosition;
-        Vector3 w = mainCam.ScreenToWorldPoint(
-            new Vector3(screen.x, screen.y, Mathf.Abs(mainCam.transform.position.z)));
-        w.z = 0f;
-        return w;
+        Color c = foamSR.color; c.a = a; foamSR.color = c;
     }
 }

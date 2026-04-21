@@ -10,6 +10,10 @@ public class Level2Manager : MonoBehaviour
     public SpriteRenderer dirtyTeethRenderer;
     public SpriteRenderer cleanTeethRenderer;
     public SpriteRenderer gargleRenderer;
+    public SpriteRenderer dirtyTongueRenderer;
+
+    [Header("Toothbrush")]
+    public GameObject toothbrush;
 
     [Header("Hint")]
     public GameObject hintArrow;
@@ -19,25 +23,30 @@ public class Level2Manager : MonoBehaviour
     public string quizSceneName = "Quiz";
 
     [Header("Shake to Rinse")]
-    public float shakeDurationNeeded = 3f;
+    public float shakeDurationNeeded = 1f;
     public float shakeThreshold = 2.5f;
 
     [Header("Hint Manager")]
     public HintManager hintManager;
 
-    private bool  readyToRinse;
-    private bool  rinsing;
-    private bool  levelDone;
-    private float shakeTimer;
+    // ── phases ────────────────────────────────────────────────────────────
+    private enum Phase { BrushTeeth, Rinse1, BrushTongue, Rinse2, Done }
+    private Phase phase = Phase.BrushTeeth;
+
+    private bool  rinsing   = false;
+    private bool  levelDone = false;
+    private float shakeTimer = 0f;
 
     void Awake() { instance = this; }
 
     void Start()
     {
-        ActivateSprite(cleanTeethRenderer, false);
-        ActivateSprite(gargleRenderer, false);
-        ActivateSprite(dirtyTeethRenderer, true);
+        ShowOnly(dirtyTeethRenderer);
+        SetInactive(cleanTeethRenderer);
+        SetInactive(gargleRenderer);
+        SetInactive(dirtyTongueRenderer);
         if (hintArrow != null) hintArrow.SetActive(false);
+        SetBrush(true);   // brush visible during first scrub phase
     }
 
     void Update()
@@ -45,7 +54,7 @@ public class Level2Manager : MonoBehaviour
         if (rinsing && !levelDone) ProcessShake();
     }
 
-    // Called by ToothScrubZone every time player scrubs
+    // ── called by ToothScrubZone ──────────────────────────────────────────
     public void OnScrubActivity()
     {
         if (hintManager != null) hintManager.OnScrubActivity();
@@ -53,21 +62,41 @@ public class Level2Manager : MonoBehaviour
 
     public void OnCleaningProgress(float progress)
     {
-        if (progress > 0f && hintArrow != null) hintArrow.SetActive(false);
-        if (progress >= 1f && !readyToRinse) TransitionToRinse();
+        if (progress >= 1f && phase == Phase.BrushTeeth)
+            StartCoroutine(TransitionToRinse1());
     }
 
-    void ActivateSprite(SpriteRenderer sr, bool active)
+    // ── called by TongueScrubZone ─────────────────────────────────────────
+    public void OnTongueProgress(float progress)
     {
-        if (sr != null) sr.gameObject.SetActive(active);
+        if (hintManager != null) hintManager.OnScrubActivity();
+        if (progress >= 1f && phase == Phase.BrushTongue)
+            StartCoroutine(TransitionToRinse2());
     }
 
-    void TransitionToRinse()
+    // ── Phase transitions ─────────────────────────────────────────────────
+    IEnumerator TransitionToRinse1()
     {
-        readyToRinse = true;
-        rinsing = true;
-        ActivateSprite(dirtyTeethRenderer, false);
-        ActivateSprite(gargleRenderer, true);
+        phase = Phase.Rinse1;
+        SetBrush(false);
+        ShowOnly(gargleRenderer);
+        StartShake();
+        yield return null;
+    }
+
+    IEnumerator TransitionToRinse2()
+    {
+        phase = Phase.Rinse2;
+        SetBrush(false);
+        ShowOnly(gargleRenderer);
+        StartShake();
+        yield return null;
+    }
+
+    void StartShake()
+    {
+        rinsing    = true;
+        shakeTimer = 0f;
         if (hintManager != null) hintManager.EnterRinsePhase();
     }
 
@@ -84,22 +113,54 @@ public class Level2Manager : MonoBehaviour
         {
             if (hintManager != null) hintManager.OnShakeActivity();
             shakeTimer += Time.deltaTime;
-            if (shakeTimer >= shakeDurationNeeded) FinishRinsing();
+            if (shakeTimer >= shakeDurationNeeded) FinishShake();
         }
     }
 
-    void FinishRinsing()
+    void FinishShake()
     {
         rinsing = false;
-        levelDone = true;
-        StartCoroutine(ShowCleanState());
+
+        if (phase == Phase.Rinse1)
+        {
+            phase = Phase.BrushTongue;
+            ShowOnly(dirtyTongueRenderer);
+            SetBrush(true);    // brush back for tongue phase
+            if (hintManager != null) hintManager.ExitRinsePhase();
+        }
+        else if (phase == Phase.Rinse2)
+        {
+            phase = Phase.Done;
+            levelDone = true;
+            StartCoroutine(ShowCleanAndFinish());
+        }
     }
 
-    IEnumerator ShowCleanState()
+    IEnumerator ShowCleanAndFinish()
     {
-        ActivateSprite(gargleRenderer, false);
-        ActivateSprite(cleanTeethRenderer, true);
+        SetBrush(false);
+        ShowOnly(cleanTeethRenderer);
         yield return new WaitForSeconds(2f);
         QuizManager.LoadQuizForLevel(levelID, quizSceneName);
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────────
+    void SetBrush(bool active)
+    {
+        if (toothbrush != null) toothbrush.SetActive(active);
+    }
+
+    void ShowOnly(SpriteRenderer sr)
+    {
+        SetInactive(dirtyTeethRenderer);
+        SetInactive(cleanTeethRenderer);
+        SetInactive(gargleRenderer);
+        SetInactive(dirtyTongueRenderer);
+        if (sr != null) sr.gameObject.SetActive(true);
+    }
+
+    void SetInactive(SpriteRenderer sr)
+    {
+        if (sr != null) sr.gameObject.SetActive(false);
     }
 }
