@@ -2,6 +2,11 @@ using UnityEngine;
 
 public class FoodDrag : MonoBehaviour
 {
+    /// Set true while tutorial plays — blocks all drag input.
+    public static bool tutorialActive = false;
+    /// True whenever any food is being dragged (used by hint to reset timer).
+    public static bool anyDragActive  = false;
+
     private Vector3 startPosition;
     private Vector3 originalScale;
     private bool isDragging = false;
@@ -22,9 +27,10 @@ public class FoodDrag : MonoBehaviour
     // ======================
     void OnMouseDown()
     {
-        if (isLocked) return;
+        if (isLocked || tutorialActive) return;
 
         isDragging = true;
+        anyDragActive = true;
 
         Vector3 pointerWorldPos = GetPointerWorldPosition();
         offset = transform.position - pointerWorldPos;
@@ -49,6 +55,7 @@ public class FoodDrag : MonoBehaviour
         if (!isDragging) return;
 
         isDragging = false;
+        anyDragActive = false;
         transform.localScale = originalScale;
         CheckDrop();
     }
@@ -58,7 +65,7 @@ public class FoodDrag : MonoBehaviour
     // ======================
     void Update()
     {
-        if (isLocked) return;
+        if (isLocked || tutorialActive) return;
         if (Input.touchCount == 0) return;
 
         Touch touch = Input.GetTouch(0);
