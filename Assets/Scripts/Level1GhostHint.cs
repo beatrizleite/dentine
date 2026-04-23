@@ -1,338 +1,298 @@
 using UnityEngine;
+using System.Collections;
 
-/// Visual tutorial + idle hint for Level 1 (drag food to basket).
-/// Uses a pure Update() state machine — no nested coroutines.
 public class Level1GhostHint : MonoBehaviour
 {
-    [Header("Auto-found at runtime")]
+    [Header("Targets")]
     public Transform targetGood;
     public Transform targetBad;
 
     [Header("Timing")]
-    public float startDelay    = 0.8f;
-    public float idleTimeout   = 3.5f;
-    public float dragDuration  = 0.9f;
+    public float startDelay   = 0.8f;
+    public float idleTimeout  = 3.5f;
+    public float dragDuration = 0.9f;
 
-    // ── visuals ───────────────────────────────────────────────────────────
-    SpriteRenderer fingerSR, trailSR, glowSR;
-    Transform fingerRoot, trailTrans;
-    GameObject glowGO;
+    // refs built at Start
+    Transform      fingerRoot;
+    Transform      trailRoot;
+    Transform      glowRoot;
 
-    // ── state machine ─────────────────────────────────────────────────────
-    enum Phase
-    {
-        Waiting,       // waiting startDelay + food spawn
-        FadeIn,        // finger fades in at food position
-        Tap,           // scale pulse (finger 'taps' food)
-        Drag,          // finger arcs from food to basket
-        Bounce,        // basket scales up+down
-        FadeOut,       // finger fades out
-        Pause,         // short pause between gestures
-        Idle,          // game unlocked; watching for player inactivity
-        IdleHint       // showing hint gesture during idle
-    }
+    // Keep texture refs alive to prevent GC collecting them
+    Texture2D _texCircle;
+    Texture2D _texRing;
 
-    Phase  phase       = Phase.Waiting;
-    float  timer       = 0f;
-    int    gesturesDone = 0;      // 0,1 = tutorial; >=2 = idle
-    bool   tutDone     = false;
-
-    // current gesture targets
-    Vector3    foodPos;
-    Vector3    basketPos;
-    GameObject basketGO;
-    FoodDrag   currentFood;
-
-    // idle tracking
-    float idleTimer = 0f;
-
-    // ── Unity ─────────────────────────────────────────────────────────────
-    void Awake()
-    {
-        BuildVisuals();
-    }
+    bool  tutorialDone = false;
+    bool  hinting      = false;
+    float idleTimer    = 0f;
+    Coroutine hintCo;
 
     void Start()
     {
         if (targetGood == null) targetGood = GameObject.Find("Target_Good")?.transform;
         if (targetBad  == null) targetBad  = GameObject.Find("Target_Bad")?.transform;
+
+        BuildVisuals();                  // create GOs AND sprites here in Start
         FoodDrag.tutorialActive = true;
-        timer = 0f;
-        phase = Phase.Waiting;
+        StartCoroutine(RunTutorial());
     }
 
     void Update()
     {
-        switch (phase)
-        {
-            case Phase.Waiting:       DoWaiting();   break;
-            case Phase.FadeIn:        DoFadeIn();    break;
-            case Phase.Tap:           DoTap();       break;
-            case Phase.Drag:          DoDrag();      break;
-            case Phase.Bounce:        DoBounce();    break;
-            case Phase.FadeOut:       DoFadeOut();   break;
-            case Phase.Pause:         DoPause();     break;
-            case Phase.Idle:          DoIdle();      break;
-            case Phase.IdleHint:      DoDrag();      break;   // reuse Drag logic
-        }
+        if (!tutorialDone) return;
 
-        // Trail always smoothly follows finger
-        if (trailTrans != null && fingerRoot != null)
-            trailTrans.position = Vector3.Lerp(
-                trailTrans.position, fingerRoot.position, Time.deltaTime * 10f);
-    }
-
-    // ── Phase handlers ────────────────────────────────────────────────────
-    void DoWaiting()
-    {
-        timer += Time.deltaTime;
-        if (timer < startDelay) return;
-
-        // Look for spawned food
-        var food = FindFirstObjectByType<FoodDrag>();
-        if (food == null) return;   // keep waiting
-
-        PrepareGesture(food);
-        Enter(Phase.FadeIn);
-    }
-
-    void DoFadeIn()
-    {
-        timer += Time.deltaTime;
-        float a = Mathf.Clamp01(timer / 0.28f);
-        SetAlpha(a);
-        if (a >= 1f) Enter(Phase.Tap);
-    }
-
-    float tapT = 0f;
-    void DoTap()
-    {
-        tapT += Time.deltaTime / 0.22f;
-        float raw = Mathf.Clamp01(tapT);
-        float s = raw < 0.5f
-            ? Mathf.Lerp(1f, 1.45f, raw * 2f)
-            : Mathf.Lerp(1.45f, 0.9f, (raw - 0.5f) * 2f);
-        fingerRoot.localScale = Vector3.one * Mathf.Lerp(s, 1f, Mathf.Clamp01(tapT - 0.8f) / 0.2f);
-        if (tapT >= 1f) { fingerRoot.localScale = Vector3.one; Enter(Phase.Drag); }
-    }
-
-    void DoDrag()
-    {
-        timer += Time.deltaTime;
-        float t  = Mathf.Clamp01(timer / dragDuration);
-        float e  = Mathf.SmoothStep(0f, 1f, t);
-        float up = Mathf.Sin(t * Mathf.PI) * Vector3.Distance(foodPos, basketPos) * 0.18f;
-        fingerRoot.position = Vector3.Lerp(foodPos, basketPos, e) + Vector3.up * up;
-
-        // Pulse glow on basket
-        if (glowGO != null && glowGO.activeSelf)
-        {
-            float ga = 0.3f + Mathf.Sin(Time.time * 5f) * 0.2f;
-            SetGlowAlpha(ga);
-        }
-
-        if (t >= 1f)
-        {
-            fingerRoot.position = basketPos;
-            // show glow
-            if (glowGO != null) { glowGO.SetActive(true); SetGlowAlpha(0.5f); }
-            if (phase == Phase.IdleHint) Enter(Phase.FadeOut);
-            else Enter(Phase.Bounce);
-        }
-    }
-
-    float bounceScale = 1f;
-    Transform bounceTarget;
-    Vector3   bounceOrig;
-    void DoBounce()
-    {
-        timer += Time.deltaTime;
-        float t = Mathf.Clamp01(timer / 0.28f);
-        float s = t < 0.5f ? Mathf.Lerp(1f, 1.22f, t * 2f)
-                            : Mathf.Lerp(1.22f, 1f, (t - 0.5f) * 2f);
-        if (bounceTarget != null)
-            bounceTarget.localScale = bounceOrig * s;
-        if (t >= 1f)
-        {
-            if (bounceTarget != null) bounceTarget.localScale = bounceOrig;
-            Enter(Phase.FadeOut);
-        }
-    }
-
-    void DoFadeOut()
-    {
-        timer += Time.deltaTime;
-        float a = Mathf.Clamp01(1f - timer / 0.32f);
-        SetAlpha(a);
-        SetGlowAlpha(a * 0.45f);
-        if (a <= 0f)
-        {
-            if (glowGO != null) glowGO.SetActive(false);
-            gesturesDone++;
-            Enter(Phase.Pause);
-        }
-    }
-
-    void DoPause()
-    {
-        timer += Time.deltaTime;
-        float pauseTime = tutDone ? 0.5f : 0.35f;
-        if (timer < pauseTime) return;
-
-        if (!tutDone && gesturesDone < 2)
-        {
-            // Tutorial: do second gesture then unlock
-            var food = FindFirstObjectByType<FoodDrag>();
-            if (food != null) PrepareGesture(food);
-            Enter(Phase.FadeIn);
-        }
-        else
-        {
-            // Tutorial complete
-            if (!tutDone)
-            {
-                tutDone = true;
-                FoodDrag.tutorialActive = false;
-            }
-            idleTimer = 0f;
-            Enter(Phase.Idle);
-        }
-    }
-
-    void DoIdle()
-    {
-        // Reset on real interaction
-        bool realInteraction = FoodDrag.anyDragActive
+        bool activity = FoodDrag.anyDragActive
             || Input.GetMouseButtonDown(0)
             || (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began);
 
-        if (realInteraction) { idleTimer = 0f; return; }
+        if (activity) { idleTimer = 0f; if (hinting) CancelHint(); return; }
 
-        var food = FindFirstObjectByType<FoodDrag>();
-        if (food == null) { idleTimer = 0f; return; }
+        var arr = FindObjectsByType<FoodDrag>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        if (arr.Length == 0) { idleTimer = 0f; return; }
 
         idleTimer += Time.deltaTime;
-        if (idleTimer >= idleTimeout)
+        if (idleTimer >= idleTimeout && !hinting)
         {
-            idleTimer = 0f;
-            PrepareGesture(food);
-            Enter(Phase.IdleHint);
+            hinting = true;
+            hintCo  = StartCoroutine(IdleHintLoop(arr[0]));
         }
+    }
+
+    void CancelHint()
+    {
+        hinting = false; idleTimer = 0f;
+        if (hintCo != null) { StopCoroutine(hintCo); hintCo = null; }
+        SetAlpha(0f);
+        SetGlowActive(false);
+    }
+
+    // ── Tutorial ──────────────────────────────────────────────────────────
+    IEnumerator RunTutorial()
+    {
+        yield return new WaitForSeconds(startDelay);
+
+        // Wait up to 4 seconds for first food to spawn
+        FoodDrag food = null;
+        float elapsed = 0f;
+        while (food == null && elapsed < 4f)
+        {
+            elapsed += Time.deltaTime;
+            var arr = FindObjectsByType<FoodDrag>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            if (arr.Length > 0) food = arr[0];
+            yield return null;   // wait one frame
+        }
+        if (food == null) { Unlock(); yield break; }
+
+        yield return StartCoroutine(SingleGesture(food));
+        yield return new WaitForSeconds(0.4f);
+        yield return StartCoroutine(SingleGesture(food));
+        yield return new WaitForSeconds(0.2f);
+
+        SetAlpha(0f);
+        SetGlowActive(false);
+        Unlock();
+    }
+
+    void Unlock() { FoodDrag.tutorialActive = false; tutorialDone = true; }
+
+    IEnumerator IdleHintLoop(FoodDrag food)
+    {
+        while (hinting)
+        {
+            var arr = FindObjectsByType<FoodDrag>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+            food = arr.Length > 0 ? arr[0] : null;
+            if (food == null) break;
+            yield return StartCoroutine(SingleGesture(food));
+            if (!hinting) break;
+            yield return new WaitForSeconds(0.5f);
+        }
+        hinting = false;
+    }
+
+    // ── Gesture ───────────────────────────────────────────────────────────
+    // Alternate which basket we show so we don't reveal the answer
+    int _gestureIndex = 0;
+
+    IEnumerator SingleGesture(FoodDrag food)
+    {
+        if (food == null) yield break;
+        Vector3 from = food.transform.position;
+
+        // Alternate: show Good basket on even gestures, Bad on odd
+        // This shows BOTH options without revealing the correct answer
+        Transform tgt = (_gestureIndex % 2 == 0) ? targetGood : targetBad;
+        _gestureIndex++;
+        Vector3 to = tgt != null ? tgt.position : from + Vector3.down * 4f;
+
+        // 1. Appear at food
+        SetFingerPos(new Vector3(from.x, from.y - 0.5f, -1f));
+        fingerRoot.localScale = Vector3.one;
+        trailRoot.position    = fingerRoot.position;
+        SetAlpha(0f);
+        float t = 0f;
+        while (t < 1f) { t += Time.deltaTime / 0.28f; SetAlpha(Mathf.Clamp01(t)); yield return null; }
+
+        // 2. Tap pulse
+        t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime / 0.12f;
+            float s = t < 0.5f ? Mathf.Lerp(1f, 1.45f, t*2f) : Mathf.Lerp(1.45f, 0.85f, (t-0.5f)*2f);
+            fingerRoot.localScale = Vector3.one * s;
+            yield return null;
+        }
+        t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime / 0.09f;
+            fingerRoot.localScale = Vector3.one * Mathf.Lerp(0.85f, 1f, Mathf.Clamp01(t));
+            yield return null;
+        }
+        fingerRoot.localScale = Vector3.one;
+
+        // 3. Arc drag toward basket (white glow — neutral, no colour hint)
+        SetGlowPos(to); SetGlowActive(true);
+        float arcH = Vector3.Distance(from, to) * 0.16f;
+        t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime / Mathf.Max(dragDuration, 0.01f);
+            float e = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t));
+            float up = Mathf.Sin(Mathf.Clamp01(t) * Mathf.PI) * arcH;
+            Vector3 p = Vector3.Lerp(from, to, e) + Vector3.up * up;
+            SetFingerPos(new Vector3(p.x, p.y, -1f));
+            trailRoot.position = Vector3.Lerp(trailRoot.position, fingerRoot.position, Time.deltaTime * 10f);
+            yield return null;
+        }
+        SetFingerPos(new Vector3(to.x, to.y, -1f));
+
+        // 4. Basket bounce
+        if (tgt != null)
+        {
+            Vector3 orig = tgt.localScale;
+            t = 0f;
+            while (t < 1f)
+            {
+                t += Time.deltaTime / 0.28f;
+                float s = t < 0.5f ? Mathf.Lerp(1f,1.22f,t*2f) : Mathf.Lerp(1.22f,1f,(t-0.5f)*2f);
+                tgt.localScale = orig * s;
+                yield return null;
+            }
+            tgt.localScale = orig;
+        }
+
+        // 5. Fade out
+        t = 0f;
+        while (t < 1f) { t += Time.deltaTime / 0.28f; SetAlpha(Mathf.Lerp(1f, 0f, Mathf.Clamp01(t))); yield return null; }
+        SetAlpha(0f);
+        SetGlowActive(false);
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────
-    void PrepareGesture(FoodDrag food)
-    {
-        currentFood = food;
-        foodPos = food.transform.position;
-
-        bool isUnhealthy = food.CompareTag("Unhealthy");
-        var  target = isUnhealthy ? targetBad : targetGood;
-
-        basketPos = target != null ? target.position : foodPos + Vector3.down * 4f;
-        basketGO  = target?.gameObject;
-
-        // Position finger just above food
-        fingerRoot.position = new Vector3(foodPos.x, foodPos.y, -1f);
-        trailTrans.position = fingerRoot.position;
-
-        // Prepare glow on correct basket
-        if (glowGO != null)
-        {
-            glowGO.transform.position = new Vector3(basketPos.x, basketPos.y, -0.5f);
-            glowGO.SetActive(true);
-            SetGlowAlpha(0f);
-        }
-
-        // Cache bounce target
-        bounceTarget = basketGO?.transform;
-        bounceOrig   = bounceTarget != null ? bounceTarget.localScale : Vector3.one;
-    }
-
-    void Enter(Phase next)
-    {
-        phase = next;
-        timer = 0f;
-        tapT  = 0f;
-    }
+    void SetFingerPos(Vector3 p) { if (fingerRoot != null) fingerRoot.position = p; }
 
     void SetAlpha(float a)
     {
-        if (fingerSR != null) { var c = fingerSR.color; c.a = a * 0.95f; fingerSR.color = c; }
-        if (trailSR  != null) { var c = trailSR.color;  c.a = a * 0.30f; trailSR.color  = c; }
+        SetSRAlpha(fingerRoot?.GetComponentInChildren<SpriteRenderer>(), a * 0.94f);
+        SetSRAlpha(trailRoot?.GetComponent<SpriteRenderer>(), a * 0.28f);
     }
 
-    void SetGlowAlpha(float a)
+    void SetGlowPos(Vector3 p)  { if (glowRoot != null) glowRoot.position = new Vector3(p.x, p.y, -0.5f); }
+    void SetGlowActive(bool v)
     {
-        if (glowSR != null) { var c = glowSR.color; c.a = a; glowSR.color = c; }
+        if (glowRoot == null) return;
+        glowRoot.gameObject.SetActive(v);
+        if (v) StartCoroutine(PulseGlow());
     }
 
-    // ── Build visuals ─────────────────────────────────────────────────────
+    IEnumerator PulseGlow()
+    {
+        var sr = glowRoot?.GetComponent<SpriteRenderer>();
+        while (glowRoot != null && glowRoot.gameObject.activeSelf)
+        {
+            float a = 0.35f + Mathf.Sin(Time.time * 4.5f) * 0.18f;
+            SetSRAlpha(sr, a);
+            yield return null;
+        }
+    }
+
+    static void SetSRAlpha(SpriteRenderer sr, float a)
+    {
+        if (sr == null) return;
+        var c = sr.color; c.a = a; sr.color = c;
+    }
+
+    // ── Build visuals (called in Start, fully in play mode) ───────────────
     void BuildVisuals()
     {
         var root = new GameObject("GhostHintRoot");
         root.transform.SetParent(transform, false);
 
         // Trail
-        var tGO = new GameObject("Trail");
+        var tGO  = new GameObject("Trail");
         tGO.transform.SetParent(root.transform, false);
-        trailSR    = tGO.AddComponent<SpriteRenderer>();
-        trailSR.sprite = Circle(64);
-        trailSR.sortingLayerName = "Default";
-        trailSR.sortingOrder = 30;
-        trailSR.color = new Color(1,1,1,0);
-        tGO.transform.localScale = Vector3.one * 0.65f;
-        trailTrans = tGO.transform;
+        var tSR  = tGO.AddComponent<SpriteRenderer>();
+        tSR.sortingLayerName = "Default";
+        tSR.sortingOrder     = 30;
+        tSR.color            = new Color(1,1,1,0);
+        _texCircle = MakeCircleTex(64);
+        tSR.sprite = Sprite.Create(_texCircle, new Rect(0,0,64,64), Vector2.one*.5f, 64f);
+        tGO.transform.localScale = Vector3.one * 0.70f;
+        trailRoot = tGO.transform;
 
-        // Finger
+        // Finger (parent for scale)
         fingerRoot = new GameObject("Finger").transform;
         fingerRoot.SetParent(root.transform, false);
-        var dGO = new GameObject("Dot");
+        var dGO  = new GameObject("Dot");
         dGO.transform.SetParent(fingerRoot, false);
-        fingerSR = dGO.AddComponent<SpriteRenderer>();
-        fingerSR.sprite = Circle(64);
-        fingerSR.sortingLayerName = "Default";
-        fingerSR.sortingOrder = 31;
-        fingerSR.color = new Color(1,1,1,0);
-        dGO.transform.localScale = Vector3.one * 0.45f;
+        var dSR  = dGO.AddComponent<SpriteRenderer>();
+        dSR.sortingLayerName = "Default";
+        dSR.sortingOrder     = 31;
+        dSR.color            = new Color(1,1,1,0);
+        dSR.sprite = Sprite.Create(_texCircle, new Rect(0,0,64,64), Vector2.one*.5f, 64f);
+        dGO.transform.localScale = Vector3.one * 0.48f;
 
-        // Target glow ring
-        glowGO = new GameObject("Glow");
-        glowGO.transform.SetParent(root.transform, false);
-        glowSR = glowGO.AddComponent<SpriteRenderer>();
-        glowSR.sprite = Ring(128);
-        glowSR.sortingLayerName = "Default";
-        glowSR.sortingOrder = 29;
-        glowSR.color = new Color(1f, 0.95f, 0.2f, 0f);
-        glowGO.transform.localScale = Vector3.one * 3.5f;
-        glowGO.SetActive(false);
+        // Glow ring on basket
+        var gGO  = new GameObject("TargetGlow");
+        gGO.transform.SetParent(root.transform, false);
+        var gSR  = gGO.AddComponent<SpriteRenderer>();
+        gSR.sortingLayerName = "Default";
+        gSR.sortingOrder     = 32;
+        gSR.color            = new Color(1f, 1f, 1f, 0f);   // white = neutral, no colour hint
+        _texRing = MakeRingTex(128);
+        gSR.sprite = Sprite.Create(_texRing, new Rect(0,0,128,128), Vector2.one*.5f, 128f);
+        gGO.transform.localScale = Vector3.one * 3.8f;
+        gGO.SetActive(false);
+        glowRoot = gGO.transform;
     }
 
-    static Sprite Circle(int n)
+    static Texture2D MakeCircleTex(int size)
     {
-        var tex = new Texture2D(n, n, TextureFormat.RGBA32, false);
-        float c = n * .5f;
-        for (int y = 0; y < n; y++) for (int x = 0; x < n; x++)
+        var tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
+        float c = size * .5f;
+        for (int y = 0; y < size; y++)
+        for (int x = 0; x < size; x++)
         {
             float d = Mathf.Sqrt((x-c)*(x-c)+(y-c)*(y-c));
             float a = Mathf.Clamp01(1f - d/c); a *= a;
-            tex.SetPixel(x,y,new Color(1,1,1,a));
+            tex.SetPixel(x, y, new Color(1,1,1,a));
         }
         tex.Apply();
-        return Sprite.Create(tex,new Rect(0,0,n,n),Vector2.one*.5f,n);
+        return tex;
     }
 
-    static Sprite Ring(int n)
+    static Texture2D MakeRingTex(int size)
     {
-        var tex = new Texture2D(n, n, TextureFormat.RGBA32, false);
-        float c = n*.5f, ro = n*.47f, ri = n*.33f;
-        for (int y = 0; y < n; y++) for (int x = 0; x < n; x++)
+        var tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
+        float c = size*.5f, rO = size*.47f, rI = size*.33f;
+        for (int y = 0; y < size; y++)
+        for (int x = 0; x < size; x++)
         {
             float d = Mathf.Sqrt((x-c)*(x-c)+(y-c)*(y-c));
-            float a = (d>=ri&&d<=ro) ? Mathf.Clamp01((d-ri)/5f)*Mathf.Clamp01((ro-d)/5f)*5f : 0f;
-            tex.SetPixel(x,y,new Color(1,1,1,a));
+            float a = (d>=rI&&d<=rO)
+                ? Mathf.Clamp01((d-rI)/5f)*Mathf.Clamp01((rO-d)/5f)*5f : 0f;
+            tex.SetPixel(x, y, new Color(1,1,1,a));
         }
         tex.Apply();
-        return Sprite.Create(tex,new Rect(0,0,n,n),Vector2.one*.5f,n);
+        return tex;
     }
 }

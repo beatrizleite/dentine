@@ -1,33 +1,37 @@
 using UnityEngine;
 
+/// Scales a SpriteRenderer to always cover the full camera view,
+/// preserving the sprite's aspect ratio (cover mode = no letterboxing).
+[RequireComponent(typeof(SpriteRenderer))]
 public class BackgroundScaler : MonoBehaviour
 {
-    void Start()
+    void Start()  { Scale(); }
+    void OnEnable() { Scale(); }
+
+    public void Scale()
     {
-        SpriteRenderer sr = GetComponent<SpriteRenderer>();
-        if (sr == null) return;
+        var cam = Camera.main;
+        if (cam == null) return;
+        var sr = GetComponent<SpriteRenderer>();
+        if (sr == null || sr.sprite == null) return;
 
-        // Resets the scale and position
+        float camH = cam.orthographicSize * 2f;
+        float camW = camH * cam.aspect;
+
+        // Reset scale to measure sprite in world units
         transform.localScale = Vector3.one;
+        float sprW = sr.sprite.bounds.size.x;
+        float sprH = sr.sprite.bounds.size.y;
 
-        // Image Size
-        float width = sr.bounds.size.x;
-        float height = sr.bounds.size.y;
+        // Cover mode: scale so both axes fill (take the larger scale)
+        float scaleX = camW / sprW;
+        float scaleY = camH / sprH;
+        float s = Mathf.Max(scaleX, scaleY);
 
-        // Screen Size
-        float worldScreenHeight = Camera.main.orthographicSize * 2.0f;
-        float worldScreenWidth = worldScreenHeight / Screen.height * Screen.width;
-
-        // Calculate Scale
-        float scaleX = worldScreenWidth / width;
-        float scaleY = worldScreenHeight / height;
-        float finalScale = Mathf.Max(scaleX, scaleY);
-
-        transform.localScale = new Vector3(finalScale, finalScale, 1);
-
-        // Center on the Camera
-        transform.position = new Vector3(Camera.main.transform.position.x, 
-                                         Camera.main.transform.position.y, 
+        transform.localScale = new Vector3(s, s, 1f);
+        // Centre on camera
+        transform.position = new Vector3(cam.transform.position.x,
+                                         cam.transform.position.y,
                                          transform.position.z);
     }
 }

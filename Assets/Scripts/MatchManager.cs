@@ -57,6 +57,13 @@ public class MatchManager : MonoBehaviour
     bool                locked;           // block input while evaluating
     int                 matchesFound;
     public void SetLocked(bool v) { locked = v; }
+    public void ShowHintTutorial()
+    {
+        var tut = GetComponent<Level3Tutorial>();
+        if (tut == null) tut = gameObject.AddComponent<Level3Tutorial>();
+        locked = true;   // block input during replay
+        tut.Show();
+    }
     int                 totalPairs;
 
     // ── static sprite cache ───────────────────────────────────────────────
@@ -69,6 +76,12 @@ public class MatchManager : MonoBehaviour
     void Awake()
     {
         instance = this;
+        // Disable URP Rendering Debugger overlay (performance monitor)
+        var t = System.Type.GetType("UnityEngine.Rendering.DebugManager, Unity.RenderPipelines.Core.Runtime");
+        if (t != null) {
+            var inst = t.GetProperty("instance", System.Reflection.BindingFlags.Public|System.Reflection.BindingFlags.Static)?.GetValue(null);
+            t.GetProperty("enableRuntimeUI")?.SetValue(inst, false);
+        }
         BuildSharedSprites();
         EnsureTools();
     }
@@ -86,6 +99,10 @@ public class MatchManager : MonoBehaviour
         if (infoPanelCloseBtn != null)
             infoPanelCloseBtn.onClick.AddListener(CloseInfoPanel);
 
+        // Wire the '?' hint button
+        var hintBtn = GameObject.Find("HintButton")?.GetComponent<UnityEngine.UI.Button>();
+        if (hintBtn != null) hintBtn.onClick.AddListener(ShowHintTutorial);
+
         locked = true;
         BuildGrid();
 
@@ -94,7 +111,13 @@ public class MatchManager : MonoBehaviour
     }
 
     /// Called by Level3Tutorial when the player dismisses it.
-    public void StartIntro() => StartCoroutine(IntroSequence());
+    bool _introStarted = false;
+    public void StartIntro()
+    {
+        if (_introStarted) { locked = false; return; }
+        _introStarted = true;
+        StartCoroutine(IntroSequence());
+    }
 
     IEnumerator IntroSequence()
     {

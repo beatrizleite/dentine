@@ -371,7 +371,7 @@ Transform:
   m_GameObject: {fileID: 73707759}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 9.38, y: -18.18, z: 0}
+  m_LocalPosition: {x: 6.9, y: -18.18, z: 0}
   m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
   m_ConstrainProportionsScale: 1
   m_Children: []
@@ -626,6 +626,7 @@ GameObject:
   - component: {fileID: 277902265}
   - component: {fileID: 277902264}
   - component: {fileID: 277902266}
+  - component: {fileID: 277902267}
   m_Layer: 0
   m_Name: Level1Manager
   m_TagString: Untagged
@@ -687,6 +688,23 @@ MonoBehaviour:
   startDelay: 0.8
   idleTimeout: 3.5
   dragDuration: 0.9
+--- !u!114 &277902267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 277902263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8866407a4b2a4a5f8b6975986a56e5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BasketLayout
+  basketGood: {fileID: 487262620}
+  basketBad: {fileID: 73707762}
+  basketScale: 0.4
+  horizontalFrac: 0.78
+  fromBottom: 2.2
 --- !u!1 &487262617
 GameObject:
   m_ObjectHideFlags: 0
@@ -818,7 +836,7 @@ Transform:
   m_GameObject: {fileID: 487262617}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.23, y: -18.18, z: 0}
+  m_LocalPosition: {x: -0.5, y: -18.18, z: 0}
   m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
   m_ConstrainProportionsScale: 1
   m_Children: []
