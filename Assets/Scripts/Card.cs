@@ -52,9 +52,42 @@ public class Card : MonoBehaviour, IPointerClickHandler
     public void SetMatched()
     {
         state = State.Matched;
+        StartCoroutine(GreenFlash());
+    }
+
+    IEnumerator GreenFlash()
+    {
+        if (glowSR == null) yield break;
+
+        // Set green colour
+        glowSR.color   = new Color(0.18f, 0.85f, 0.28f, 0f);
         glowSR.enabled = true;
-        // Soft pulse
-        StartCoroutine(PulseGlow());
+
+        // Bounce scale + fade in
+        float t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime / 0.20f;
+            float e  = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t));
+            float s  = 1f + Mathf.Sin(Mathf.Clamp01(t) * Mathf.PI) * 0.08f;
+            transform.localScale         = new Vector3(s, s, 1f);
+            var c = glowSR.color; c.a    = e * 0.65f; glowSR.color = c;
+            yield return null;
+        }
+        transform.localScale = Vector3.one;
+
+        yield return new WaitForSeconds(0.45f);
+
+        // Fade out — leave card clean
+        t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime / 0.30f;
+            var c = glowSR.color; c.a = Mathf.Lerp(0.65f, 0f, Mathf.Clamp01(t)); glowSR.color = c;
+            yield return null;
+        }
+        glowSR.enabled = false;
+        glowSR.color   = new Color(1f, 1f, 1f, 0f);   // reset to transparent white
     }
 
     // ── input ─────────────────────────────────────────────────────────────
@@ -109,16 +142,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         done?.Invoke();
     }
 
-    IEnumerator PulseGlow()
-    {
-        float speed = 2.5f;
-        while (state == State.Matched)
-        {
-            float a = (Mathf.Sin(Time.time * speed) + 1f) * 0.5f * 0.55f;
-            var c = glowSR.color; c.a = a; glowSR.color = c;
-            yield return null;
-        }
-    }
+    // PulseGlow removed — replaced by GreenFlash
 
     /// Initialise showing the front face immediately (no animation).
     public void InitialiseFaceUp(int toolId, Sprite front)

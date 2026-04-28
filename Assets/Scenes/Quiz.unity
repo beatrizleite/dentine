@@ -289,7 +289,6 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
-  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -465,12 +464,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
   m_IgnoreLayout: 0
-  m_MinWidth: 80
-  m_MinHeight: 80
-  m_PreferredWidth: 80
-  m_PreferredHeight: 80
+  m_MinWidth: 160
+  m_MinHeight: 160
+  m_PreferredWidth: 160
+  m_PreferredHeight: 160
   m_FlexibleWidth: 0
-  m_FlexibleHeight: -1
+  m_FlexibleHeight: 0
   m_LayoutPriority: 1
 --- !u!1 &612214515
 GameObject:
@@ -1429,12 +1428,12 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1389308964}
   - {fileID: 555541719}
+  - {fileID: 1389308964}
   m_Father: {fileID: 694232370}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.02, y: 0.68}
-  m_AnchorMax: {x: 0.98, y: 0.96}
+  m_AnchorMin: {x: 0.02, y: 0.65}
+  m_AnchorMax: {x: 0.98, y: 0.97}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -1489,14 +1488,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.HorizontalLayoutGroup
   m_Padding:
-    m_Left: 20
-    m_Right: 20
+    m_Left: 16
+    m_Right: 16
     m_Top: 10
     m_Bottom: 10
-  m_ChildAlignment: 3
-  m_Spacing: 20
-  m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
+  m_ChildAlignment: 4
+  m_Spacing: 14
+  m_ChildForceExpandWidth: 0
+  m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1
   m_ChildControlHeight: 1
   m_ChildScaleWidth: 0
@@ -1597,7 +1596,6 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
-  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1948,18 +1946,17 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 72
+  m_fontSize: 96
   m_fontSizeBase: 125
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 36
-  m_fontSizeMax: 72
+  m_fontSizeMin: 48
+  m_fontSizeMax: 96
   m_fontStyle: 0
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
-  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -2014,7 +2011,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.LayoutElement
   m_IgnoreLayout: 0
-  m_MinWidth: -1
+  m_MinWidth: 0
   m_MinHeight: 60
   m_PreferredWidth: -1
   m_PreferredHeight: -1
@@ -2116,7 +2113,6 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
-  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -2254,11 +2250,11 @@ MonoBehaviour:
       questionAudio: {fileID: 0}
       option1:
         type: 0
-        text: Uma vez
+        text: 1
         image: {fileID: 0}
       option2:
         type: 0
-        text: Duas ou mais
+        text: 2 ou mais
         image: {fileID: 0}
       correctAnswerIndex: 1
     - questionText: Quanto tempo devemos escovar os dentes?
@@ -2296,6 +2292,55 @@ MonoBehaviour:
       correctAnswerIndex: 0
     returnScene: DentineMenu
     nextScene: Level3
+  - levelName: Level3
+    questions:
+    - questionText: Como ficam os nossos dentes depois de ir ao dentista?
+      questionAudio: {fileID: 0}
+      option1:
+        type: 1
+        text: 
+        image: {fileID: 5275257091155199138, guid: 7b8b1fb832be4412398f11614414b6ca, type: 3}
+      option2:
+        type: 1
+        text: 
+        image: {fileID: 6402896907047545023, guid: 6b0b798f5c64e4570ae6f8ca0cf7db30, type: 3}
+      correctAnswerIndex: 0
+    - questionText: "Qual \xE9 a ferramenta que ajuda o dentista a ver os dentes
+        escondidos no fundo da boca?"
+      questionAudio: {fileID: 0}
+      option1:
+        type: 1
+        text: 
+        image: {fileID: 21300000, guid: 6d45db88da4a444e7aa1c1313f830914, type: 3}
+      option2:
+        type: 1
+        text: 
+        image: {fileID: 21300000, guid: 16324b6c714e24a2dadce8cba58b199e, type: 3}
+      correctAnswerIndex: 1
+    - questionText: "O que \xE9 usado para esfregar os teus dentes?"
+      questionAudio: {fileID: 0}
+      option1:
+        type: 1
+        text: 
+        image: {fileID: 7901622571200134146, guid: bb8333e9ef5e34a3f884a7c873215da4, type: 3}
+      option2:
+        type: 1
+        text: 
+        image: {fileID: 21300000, guid: badfa2ecc7c354709be60b8f39631fb5, type: 3}
+      correctAnswerIndex: 1
+    - questionText: O que ganhas no final da consulta por seres corajoso?
+      questionAudio: {fileID: 0}
+      option1:
+        type: 1
+        text: 
+        image: {fileID: -4597436970944649126, guid: d1abd39842ac843f192fd620749287c3, type: 3}
+      option2:
+        type: 1
+        text: 
+        image: {fileID: -5149687994278512818, guid: 120c24b714e91460085f11088ee8c905, type: 3}
+      correctAnswerIndex: 1
+    returnScene: DentineMenu
+    nextScene: DentineMenu
   wrongAnswerColor: {r: 1, g: 0, b: 0, a: 1}
   shakeDuration: 0.2
   shakeIntensity: 10
@@ -2606,7 +2651,6 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
-  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0

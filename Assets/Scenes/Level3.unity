@@ -837,47 +837,31 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MatchManager
   tools:
-  - toolName: Espelho Bucal
-    toolSprite: {fileID: 0}
-    infoText: "O espelho bucal \xE9 utilizado para visualizar zonas de dif\xEDcil
-      acesso na boca. Permite ao dentista inspecionar os dentes sem mover a cabe\xE7a
-      do paciente."
-  - toolName: Sonda Periodontal
-    toolSprite: {fileID: 0}
-    infoText: "A sonda periodontal mede a profundidade das bolsas gengivais. \xC9
-      essencial no diagn\xF3stico de doen\xE7as periodontais e avalia\xE7\xE3o da
-      sa\xFAde gengival."
-  - toolName: "Turbina Dent\xE1ria"
-    toolSprite: {fileID: 0}
-    infoText: "A turbina dent\xE1ria \xE9 um instrumento rotativo de alta velocidade
-      usado para cortar e preparar os dentes para restaura\xE7\xF5es."
-  - toolName: "F\xF3rceps"
-    toolSprite: {fileID: 0}
-    infoText: "Os f\xF3rceps s\xE3o utilizados nas exodontias. Existem diferentes
-      tipos adaptados a cada grupo de dentes e arcada dent\xE1ria."
-  - toolName: Seringa Carpule
-    toolSprite: {fileID: 0}
-    infoText: "A seringa carpule \xE9 usada para administrar anestesia local. Permite
-      controlo preciso da quantidade de anest\xE9sico injetado."
-  - toolName: Destartarizador
-    toolSprite: {fileID: 0}
-    infoText: "O destartarizador ultrass\xF3nico remove o t\xE1rtaro atrav\xE9s de
-      vibra\xE7\xF5es ultrass\xF3nicas. \xC9 fundamental na higiene oral profissional."
-  - toolName: Radiografia Intraoral
-    toolSprite: {fileID: 0}
-    infoText: "A radiografia intraoral permite visualizar estruturas n\xE3o vis\xEDveis
-      a olho nu, auxiliando no diagn\xF3stico de c\xE1ries e avalia\xE7\xE3o \xF3ssea."
-  - toolName: "Escova Profil\xE1tica"
-    toolSprite: {fileID: 0}
-    infoText: "A escova profil\xE1tica polida os dentes com pasta profil\xE1tica
-      para remover manchas superficiais. \xC9 usada em higiene oral profissional."
+  - toolName: Palito do dentista
+    toolSprite: {fileID: 21300000, guid: ce2854463695940c7a000e2870ac064c, type: 3}
+    infoText: "Verifica se os teus dentes est\xE3o fortes!"
+  - toolName: "Espelhinho m\xE1gico"
+    toolSprite: {fileID: 21300000, guid: 16324b6c714e24a2dadce8cba58b199e, type: 3}
+    infoText: Ajuda o dentista a ver os dentes escondidos!
+  - toolName: "Escova supers\xF3nica"
+    toolSprite: {fileID: 21300000, guid: badfa2ecc7c354709be60b8f39631fb5, type: 3}
+    infoText: "Limpa os dentes muito mais r\xE1pido!"
+  - toolName: Creme protetor
+    toolSprite: {fileID: 21300000, guid: 6d45db88da4a444e7aa1c1313f830914, type: 3}
+    infoText: "Protege os teus dentes das c\xE1ries!"
+  - toolName: "Linha m\xE1gica"
+    toolSprite: {fileID: 21300000, guid: 18dddb7d1d28f41deb39392fdc525d3d, type: 3}
+    infoText: Limpa os cantinhos entre os dentes!
+  - toolName: "Limpador de l\xEDngua"
+    toolSprite: {fileID: 21300000, guid: d3e651072061f4bf2ad2fa227eb256ba, type: 3}
+    infoText: "Deixa o h\xE1lito fresquinho!"
   cols: 4
-  rows: 4
-  cardWidth: 1.1
-  cardHeight: 1.1
-  gapX: 0.22
-  gapY: 0.22
-  gridCenter: {x: 0, y: -0.5, z: 0}
+  rows: 3
+  cardWidth: 1.5
+  cardHeight: 1.5
+  gapX: 0.28
+  gapY: 0.28
+  gridCenter: {x: 0, y: -0.3, z: 0}
   flipDuration: 0.32
   mismatchDelay: 0.75
   infoPanel: {fileID: 154378795}
@@ -1056,6 +1040,7 @@ GameObject:
   - component: {fileID: 972699043}
   - component: {fileID: 972699042}
   - component: {fileID: 972699041}
+  - component: {fileID: 972699044}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1145,6 +1130,50 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &972699044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 972699040}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a79441f348de89743a2939f4d699eac1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.RenderPipelines.Universal.Runtime::UnityEngine.Rendering.Universal.UniversalAdditionalCameraData
+  m_RenderShadows: 1
+  m_RequiresDepthTextureOption: 2
+  m_RequiresOpaqueTextureOption: 2
+  m_CameraType: 0
+  m_Cameras: []
+  m_RendererIndex: -1
+  m_VolumeLayerMask:
+    serializedVersion: 2
+    m_Bits: 1
+  m_VolumeTrigger: {fileID: 0}
+  m_VolumeFrameworkUpdateModeOption: 2
+  m_RenderPostProcessing: 0
+  m_Antialiasing: 0
+  m_AntialiasingQuality: 2
+  m_StopNaN: 0
+  m_Dithering: 0
+  m_ClearDepth: 1
+  m_AllowXRRendering: 1
+  m_AllowHDROutput: 1
+  m_UseScreenCoordOverride: 0
+  m_ScreenSizeOverride: {x: 0, y: 0, z: 0, w: 0}
+  m_ScreenCoordScaleBias: {x: 0, y: 0, z: 0, w: 0}
+  m_RequiresDepthTexture: 0
+  m_RequiresColorTexture: 0
+  m_TaaSettings:
+    m_Quality: 3
+    m_FrameInfluence: 0.1
+    m_JitterScale: 1
+    m_MipBias: 0
+    m_VarianceClampScale: 0.9
+    m_ContrastAdaptiveSharpening: 0
+  m_Version: 2
 --- !u!1 &1322408417
 GameObject:
   m_ObjectHideFlags: 0
@@ -1360,7 +1389,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2

@@ -18,7 +18,7 @@ public class MatchManager : MonoBehaviour
         public string infoText = "Info placeholder — add your text here.";
     }
 
-    [Header("Tools (8 needed for a 4x4 grid)")]
+    [Header("Tools (6 needed for a 4x3 grid)")]
     public ToolConfig[] tools;
 
     [Header("Grid")]
@@ -107,7 +107,15 @@ public class MatchManager : MonoBehaviour
         BuildGrid();
 
         bool hasTutorial = FindFirstObjectByType<Level3Tutorial>() != null;
-        if (!hasTutorial) StartCoroutine(IntroSequence());
+        if (hasTutorial)
+        {
+            // Hide all cards while tutorial plays
+            foreach (var card in allCards) card.gameObject.SetActive(false);
+        }
+        else
+        {
+            StartCoroutine(IntroSequence());
+        }
     }
 
     /// Called by Level3Tutorial when the player dismisses it.
@@ -116,6 +124,9 @@ public class MatchManager : MonoBehaviour
     {
         if (_introStarted) { locked = false; return; }
         _introStarted = true;
+        // Reactivate cards that were hidden during tutorial
+        foreach (var card in allCards)
+            if (card != null) card.gameObject.SetActive(true);
         StartCoroutine(IntroSequence());
     }
 
@@ -226,25 +237,37 @@ public class MatchManager : MonoBehaviour
         backSR.sortingOrder = 1;
         backGO.transform.localScale = new Vector3(cardWidth, cardHeight, 1f);
 
-        // Front face
+        // Front face — fill card using a uniform scale
         var frontGO = new GameObject("Front");
         frontGO.transform.SetParent(go.transform, false);
         var frontSR = frontGO.AddComponent<SpriteRenderer>();
-        frontSR.sprite = tools[toolId].toolSprite ?? s_placeholders[toolId % s_placeholders.Length];
+        var toolSprite = tools[toolId].toolSprite ?? s_placeholders[toolId % s_placeholders.Length];
+        frontSR.sprite = toolSprite;
         frontSR.sortingOrder = 2;
         frontSR.enabled = false;
-        frontGO.transform.localScale = new Vector3(cardWidth * 0.8f, cardHeight * 0.8f, 1f);
+        // Scale to fill 86% of card on shortest axis, preserving aspect ratio
+        float fill   = cardWidth * 0.86f;
+        float sprW   = toolSprite.bounds.size.x;
+        float sprH   = toolSprite.bounds.size.y;
+        float scaleX = (sprW > 0) ? fill / sprW : fill;
+        float scaleY = (sprH > 0) ? fill / sprH : fill;
+        // Use smaller scale so image fits entirely inside the card
+        float fitS   = Mathf.Min(scaleX, scaleY);
+        // But bump it up so the image fills nicely — cap at card size
+        float maxS   = cardWidth * 0.92f / Mathf.Max(sprW, sprH);
+        fitS = Mathf.Min(fitS, maxS);
+        frontGO.transform.localScale = new Vector3(fitS, fitS, 1f);
 
-        // Glow (match highlight)
+        // Match overlay — sits ON TOP of the front face as a colour flash
         var glowGO = new GameObject("Glow");
         glowGO.transform.SetParent(go.transform, false);
-        glowGO.transform.localPosition = new Vector3(0, 0, -0.05f);
+        glowGO.transform.localPosition = Vector3.zero;   // same plane as front
         var glowSR = glowGO.AddComponent<SpriteRenderer>();
         glowSR.sprite = s_glow;
-        glowSR.sortingOrder = 3;
-        glowSR.color = new Color(1f, 0.9f, 0.3f, 0f);
+        glowSR.sortingOrder = 4;   // above front (2) and shadow (0)
+        glowSR.color = new Color(1f, 1f, 1f, 0f);        // transparent white — coloured in SetMatched
         glowSR.enabled = false;
-        glowGO.transform.localScale = new Vector3(cardWidth * 1.2f, cardHeight * 1.2f, 1f);
+        glowGO.transform.localScale = new Vector3(cardWidth, cardHeight, 1f);
 
         // Collider for click detection
         var col = go.AddComponent<BoxCollider2D>();
