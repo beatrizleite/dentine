@@ -262,12 +262,8 @@ public class QuizManager : MonoBehaviour
 
     int CalculateStars(int correct, int total)
     {
-        float percentage = (float)correct / total;
-        
-        if (percentage >= 1f) return 3;
-        if (percentage >= 0.7f) return 2;
-        if (percentage >= 0.4f) return 1;
-        return 0;
+        // 1 star per correct answer (max = total questions)
+        return Mathf.Clamp(correct, 0, starImages.Length);
     }
 
     void SaveStars(int stars)

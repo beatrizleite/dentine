@@ -471,6 +471,109 @@ MonoBehaviour:
   m_FlexibleWidth: 0
   m_FlexibleHeight: 0
   m_LayoutPriority: 1
+--- !u!1 &574981069
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 574981072}
+  - component: {fileID: 574981071}
+  - component: {fileID: 574981070}
+  m_Layer: 0
+  m_Name: Background
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &574981070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 574981069}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eceb56f62318d4a888fd49023936e3e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BackgroundScaler
+--- !u!212 &574981071
+SpriteRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 574981069}
+  m_Enabled: 1
+  m_CastShadows: 0
+  m_ReceiveShadows: 0
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 0
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: -10
+  m_Sprite: {fileID: -7443756053782179069, guid: 729949a043e504b11acdf6cc995e8651, type: 3}
+  m_Color: {r: 0.88, g: 0.92, b: 0.98, a: 0.45}
+  m_FlipX: 0
+  m_FlipY: 0
+  m_DrawMode: 0
+  m_Size: {x: 28.16, y: 15.36}
+  m_AdaptiveModeThreshold: 0.5
+  m_SpriteTileMode: 0
+  m_WasSpriteAssigned: 1
+  m_MaskInteraction: 0
+  m_SpriteSortPoint: 0
+--- !u!4 &574981072
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 574981069}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &612214515
 GameObject:
   m_ObjectHideFlags: 0
@@ -683,6 +786,81 @@ MonoBehaviour:
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
   m_Version: 2
+--- !u!1 &648986359
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 648986360}
+  - component: {fileID: 648986361}
+  - component: {fileID: 648986362}
+  m_Layer: 0
+  m_Name: Star5
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &648986360
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 648986359}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1111155443}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &648986361
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 648986359}
+  m_CullTransparentMesh: 1
+--- !u!114 &648986362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 648986359}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 4815476061570213978, guid: f3903b226b74c4a56a6bf8b86201ae33, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &694232366
 GameObject:
   m_ObjectHideFlags: 0
@@ -802,7 +980,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.3764706}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1364,6 +1542,8 @@ RectTransform:
   - {fileID: 82124424}
   - {fileID: 612214516}
   - {fileID: 916574129}
+  - {fileID: 1720128229}
+  - {fileID: 648986360}
   m_Father: {fileID: 1023370140}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -1432,8 +1612,8 @@ RectTransform:
   - {fileID: 1389308964}
   m_Father: {fileID: 694232370}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.02, y: 0.65}
-  m_AnchorMax: {x: 0.98, y: 0.97}
+  m_AnchorMin: {x: 0.02, y: 0.64}
+  m_AnchorMax: {x: 0.98, y: 0.87}
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
@@ -2194,54 +2374,67 @@ MonoBehaviour:
   - {fileID: 82124425}
   - {fileID: 612214517}
   - {fileID: 916574130}
+  - {fileID: 1720128231}
+  - {fileID: 648986362}
   continueButton: {fileID: 1979770133}
   levelQuizzes:
   - levelName: Level1
     questions:
-    - questionText: O que faz bem aos dentes?
+    - questionText: "Que alimentos saud\xE1veis escolherias para o Banquete Brilhante?"
       questionAudio: {fileID: 0}
       option1:
         type: 1
-        text: "Doces e Rebu\xE7ados"
-        image: {fileID: 21300000, guid: 47ba96e11d58743fc939bb7db0bca169, type: 3}
+        text: 
+        image: {fileID: 1352961961597019730, guid: cbcafd3e508c94c768f6111f4f72d0d5, type: 3}
       option2:
         type: 1
-        text: Frutas e Vegetais
+        text: 
         image: {fileID: 21300000, guid: dd9e790704dda4a878b763f5d9aabd11, type: 3}
       correctAnswerIndex: 1
-    - questionText: "O que pode causar c\xE1ries?"
+    - questionText: Qual o alimento que os teus dentes preferem?
       questionAudio: {fileID: 0}
       option1:
         type: 1
-        text: 'Comer muitos doces '
-        image: {fileID: 6613942966907892568, guid: d2721912df20142398befcddbef033cb, type: 3}
+        text: 
+        image: {fileID: -5209720356119618007, guid: 6cf4828affa6349ff8b2f8fac545d267, type: 3}
       option2:
         type: 1
-        text: "Comer ma\xE7\xE3s"
-        image: {fileID: -7832214784768987486, guid: a16666eacfadd4c9d878e61088a6c815, type: 3}
-      correctAnswerIndex: 0
-    - questionText: "Qual bebida \xE9 melhor para os dentes?"
+        text: 
+        image: {fileID: -4470592730861715767, guid: 6d553d049882d41f9b1f4e359dd34128, type: 3}
+      correctAnswerIndex: 1
+    - questionText: "O que pode causar c\xE1rie dent\xE1ria?"
       questionAudio: {fileID: 0}
       option1:
         type: 1
-        text: "\xC1gua"
+        text: 
+        image: {fileID: 4189502365709195648, guid: 9504076cadd414a57bd44a1df9fe79ae, type: 3}
+      option2:
+        type: 1
+        text: 
+        image: {fileID: -7832214784768987486, guid: a16666eacfadd4c9d878e61088a6c815, type: 3}
+      correctAnswerIndex: 0
+    - questionText: Qual a bebida melhor para os teus dentes?
+      questionAudio: {fileID: 0}
+      option1:
+        type: 1
+        text: 
         image: {fileID: 8509550459451208454, guid: 82a46a22756324eadb82b41213b81b25, type: 3}
       option2:
         type: 1
-        text: Refrigerante
-        image: {fileID: -3289453322174803879, guid: 6d1f36b15442f4b76bb8281bb40dbf19, type: 3}
+        text: 
+        image: {fileID: 2138416828236337748, guid: 1015f6d4cc75e4386a79afff3878f5b8, type: 3}
       correctAnswerIndex: 0
-    - questionText: "O que acontece quando comemos alimentos saud\xE1veis?"
+    - questionText: "O que acontece quando comes alimentos saud\xE1veis?"
       questionAudio: {fileID: 0}
       option1:
         type: 1
-        text: Dente Fraco
-        image: {fileID: 6402896907047545023, guid: 6b0b798f5c64e4570ae6f8ca0cf7db30, type: 3}
+        text: 
+        image: {fileID: 5275257091155199138, guid: 7b8b1fb832be4412398f11614414b6ca, type: 3}
       option2:
         type: 1
-        text: "Dente Saud\xE1vel"
-        image: {fileID: 5275257091155199138, guid: 7b8b1fb832be4412398f11614414b6ca, type: 3}
-      correctAnswerIndex: 1
+        text: 
+        image: {fileID: 6402896907047545023, guid: 6b0b798f5c64e4570ae6f8ca0cf7db30, type: 3}
+      correctAnswerIndex: 0
     returnScene: DentineMenu
     nextScene: Level2
   - levelName: Level2
@@ -2360,6 +2553,81 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1720128228
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1720128229}
+  - component: {fileID: 1720128230}
+  - component: {fileID: 1720128231}
+  m_Layer: 0
+  m_Name: Star4
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1720128229
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1720128228}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1111155443}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &1720128230
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1720128228}
+  m_CullTransparentMesh: 1
+--- !u!114 &1720128231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1720128228}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 4815476061570213978, guid: f3903b226b74c4a56a6bf8b86201ae33, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &1727324367
 GameObject:
   m_ObjectHideFlags: 0
@@ -3612,7 +3880,7 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4282401023
   m_fontColor: {r: 1, g: 0.25, b: 0.25, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
@@ -3625,7 +3893,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2
@@ -3703,3 +3971,4 @@ SceneRoots:
   - {fileID: 1022339669}
   - {fileID: 1609736676}
   - {fileID: 8136559641359432638}
+  - {fileID: 574981072}
