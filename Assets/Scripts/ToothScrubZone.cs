@@ -1,24 +1,34 @@
 using UnityEngine;
 
+/// Tooth scrub zone. Requires the player to physically move the brush across
+/// the zone a meaningful distance (not just hold still) before it cleans.
+/// Progress = distanceScrubbed / requiredDistance, shown via foam alpha.
 [RequireComponent(typeof(Collider2D))]
 public class ToothScrubZone : MonoBehaviour
 {
     [Header("Scrub Settings")]
-    public float scrubDuration = 2.0f;
+    [Tooltip("Total brush travel (world units) required to clean this zone.")]
+    public float requiredDistance = 6.0f;   // ~3 sweeps across a zone
+
+    [Tooltip("Minimum brush speed (units/sec) to count as scrubbing, not hovering.")]
+    public float minSpeed = 0.3f;
+
     public Sprite foamSprite;
 
     // ── statics ───────────────────────────────────────────────────────────
-    private static int s_total   = 0;
-    private static int s_cleaned = 0;
+    static int s_total   = 0;
+    static int s_cleaned = 0;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     static void ResetStatics() { s_total = 0; s_cleaned = 0; }
 
     // ── per-zone ──────────────────────────────────────────────────────────
-    private Collider2D     col;
-    private SpriteRenderer foamSR;
-    private float          accumTime = 0f;
-    private bool           cleaned   = false;
+    Collider2D     col;
+    SpriteRenderer foamSR;
+    float          distanceScrubbed = 0f;
+    Vector3        lastBrushPos;
+    bool           wasInside = false;
+    bool           cleaned   = false;
 
     void OnEnable()  { s_total++; }
     void OnDisable() { if (s_total > 0) s_total--; }
@@ -51,43 +61,56 @@ public class ToothScrubZone : MonoBehaviour
         float targetH = box != null ? box.size.y : 0.6f;
         float sprH    = foamSR.sprite.bounds.size.y;
         if (sprH <= 0f) return;
-        float s = targetH / sprH;
-        foamSR.transform.localScale = new Vector3(s, s, 1f);
+        foamSR.transform.localScale = Vector3.one * (targetH / sprH);
     }
 
     void Update()
     {
         if (cleaned) return;
 
-        // Scrubbing only happens when the brush head is inside this zone
         var brush = ToothbrushController.instance;
-        bool inside = brush != null && brush.IsActive && BrushHeadInside(brush.BrushHeadWorld);
+        if (brush == null || !brush.IsActive) { wasInside = false; return; }
+
+        Vector3 headPos = brush.BrushHeadWorld;
+        bool inside = BrushHeadInside(headPos);
 
         if (inside)
         {
-            accumTime += Time.deltaTime;
-            SetAlpha(Mathf.Clamp01(accumTime / scrubDuration));
+            if (wasInside)
+            {
+                // Accumulate distance only when moving fast enough (real scrubbing)
+                float moved = Vector3.Distance(headPos, lastBrushPos);
+                float speed = moved / Time.deltaTime;
+                if (speed >= minSpeed)
+                    distanceScrubbed += moved;
+            }
+
+            SetAlpha(Mathf.Clamp01(distanceScrubbed / requiredDistance));
             if (Level2Manager.instance != null) Level2Manager.instance.OnScrubActivity();
-            if (accumTime >= scrubDuration) MarkCleaned();
+            if (distanceScrubbed >= requiredDistance) MarkCleaned();
         }
+
+        wasInside    = inside;
+        lastBrushPos = headPos;
     }
 
-    // Direct transform-based AABB — no Physics2D latency
+    const float brushRadius = 0.35f;
     bool BrushHeadInside(Vector3 p)
     {
         var box = col as BoxCollider2D;
         if (box == null) return false;
         Vector2 wc = transform.TransformPoint(box.offset);
         Vector3 ls = transform.lossyScale;
-        float hx = box.size.x * 0.5f * Mathf.Abs(ls.x);
-        float hy = box.size.y * 0.5f * Mathf.Abs(ls.y);
+        float hx = box.size.x * 0.5f * Mathf.Abs(ls.x) + brushRadius;
+        float hy = box.size.y * 0.5f * Mathf.Abs(ls.y) + brushRadius;
         return p.x >= wc.x - hx && p.x <= wc.x + hx &&
                p.y >= wc.y - hy && p.y <= wc.y + hy;
     }
 
     void MarkCleaned()
     {
-        cleaned = true; SetAlpha(1f);
+        cleaned = true;
+        SetAlpha(1f);
         s_cleaned++;
         float prog = s_total > 0 ? (float)s_cleaned / s_total : 1f;
         if (Level2Manager.instance != null) Level2Manager.instance.OnCleaningProgress(prog);

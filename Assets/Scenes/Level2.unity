@@ -285,7 +285,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28fd4258b794440169389557572c197e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToothScrubZone
-  scrubDuration: 0.4
+  requiredDistance: 6
+  minSpeed: 0.3
   foamSprite: {fileID: -7419915806220386332, guid: a9c1baa1d5f444d1aa15aac94b274ae4, type: 3}
 --- !u!1 &54475412
 GameObject:
@@ -378,7 +379,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28fd4258b794440169389557572c197e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToothScrubZone
-  scrubDuration: 0.4
+  requiredDistance: 6
+  minSpeed: 0.3
   foamSprite: {fileID: -7419915806220386332, guid: a9c1baa1d5f444d1aa15aac94b274ae4, type: 3}
 --- !u!1 &101096937
 GameObject:
@@ -1390,7 +1392,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28fd4258b794440169389557572c197e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToothScrubZone
-  scrubDuration: 0.4
+  requiredDistance: 6
+  minSpeed: 0.3
   foamSprite: {fileID: -7419915806220386332, guid: a9c1baa1d5f444d1aa15aac94b274ae4, type: 3}
 --- !u!1 &415114158
 GameObject:
@@ -2051,7 +2054,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc74632b3a2b24e50b8b17e0cdb63d62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TongueScrubZone
-  scrubDuration: 0.4
+  requiredDistance: 3.5
+  minSpeed: 0.3
   foamSprite: {fileID: -7419915806220386332, guid: a9c1baa1d5f444d1aa15aac94b274ae4, type: 3}
 --- !u!61 &727358909
 BoxCollider2D:
@@ -2636,7 +2640,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28fd4258b794440169389557572c197e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToothScrubZone
-  scrubDuration: 0.4
+  requiredDistance: 6
+  minSpeed: 0.3
   foamSprite: {fileID: -7419915806220386332, guid: a9c1baa1d5f444d1aa15aac94b274ae4, type: 3}
 --- !u!1 &1065038776
 GameObject:
@@ -2683,7 +2688,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc74632b3a2b24e50b8b17e0cdb63d62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TongueScrubZone
-  scrubDuration: 0.4
+  requiredDistance: 3.5
+  minSpeed: 0.3
   foamSprite: {fileID: -7419915806220386332, guid: a9c1baa1d5f444d1aa15aac94b274ae4, type: 3}
 --- !u!61 &1065038779
 BoxCollider2D:
@@ -2851,7 +2857,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc74632b3a2b24e50b8b17e0cdb63d62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TongueScrubZone
-  scrubDuration: 0.4
+  requiredDistance: 3.5
+  minSpeed: 0.3
   foamSprite: {fileID: -7419915806220386332, guid: a9c1baa1d5f444d1aa15aac94b274ae4, type: 3}
 --- !u!61 &1109388709
 BoxCollider2D:
@@ -3205,7 +3212,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28fd4258b794440169389557572c197e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToothScrubZone
-  scrubDuration: 0.4
+  requiredDistance: 6
+  minSpeed: 0.3
   foamSprite: {fileID: -7419915806220386332, guid: a9c1baa1d5f444d1aa15aac94b274ae4, type: 3}
 --- !u!1 &1269682792
 GameObject:
@@ -3373,7 +3381,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28fd4258b794440169389557572c197e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToothScrubZone
-  scrubDuration: 0.4
+  requiredDistance: 6
+  minSpeed: 0.3
   foamSprite: {fileID: -7419915806220386332, guid: a9c1baa1d5f444d1aa15aac94b274ae4, type: 3}
 --- !u!1 &1475099292
 GameObject:
@@ -3420,7 +3429,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc74632b3a2b24e50b8b17e0cdb63d62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TongueScrubZone
-  scrubDuration: 0.4
+  requiredDistance: 3.5
+  minSpeed: 0.3
   foamSprite: {fileID: -7419915806220386332, guid: a9c1baa1d5f444d1aa15aac94b274ae4, type: 3}
 --- !u!61 &1475099295
 BoxCollider2D:
