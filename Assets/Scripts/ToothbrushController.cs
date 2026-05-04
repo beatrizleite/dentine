@@ -1,3 +1,6 @@
+/// Draggable toothbrush that follows the pointer/touch each frame.
+/// The brush head position (BrushHeadWorld) is used by ToothScrubZone and
+/// TongueScrubZone to detect scrubbing — raw pointer position is not enough.
 using UnityEngine;
 
 /// Draggable toothbrush that follows the pointer/touch.

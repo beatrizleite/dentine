@@ -4,7 +4,7 @@ using UnityEngine;
 public class ToothScrubZone : MonoBehaviour
 {
     [Header("Scrub Settings")]
-    public float scrubDuration = 1.2f;
+    public float scrubDuration = 2.0f;
     public Sprite foamSprite;
 
     // ── statics ───────────────────────────────────────────────────────────

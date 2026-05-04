@@ -1,26 +1,28 @@
 using UnityEngine;
 
+/// Scales a SpriteRenderer so its height is a set fraction of the camera view height.
+/// Called on OnEnable so it re-scales whenever the object becomes active mid-game.
 [RequireComponent(typeof(SpriteRenderer))]
 public class CharacterScaler : MonoBehaviour
 {
-    [Tooltip("0-1: fraction of screen height. 1 = full screen height.")]
+    [Tooltip("Fraction of screen height to fill (1 = full height).")]
     public float heightFraction = 1f;
 
-    [Tooltip("Vertical offset in world units after scaling.")]
+    [Tooltip("Additional vertical offset in world units after scaling.")]
     public float verticalOffset = 0f;
 
-    private bool scaled = false;
+    bool _scaled;
 
     void OnEnable()
     {
-        // Scale every time the object becomes active
         Scale();
-        scaled = true;
+        _scaled = true;
     }
 
     void Start()
     {
-        if (!scaled) Scale();
+        // Fallback in case OnEnable was already called before Start
+        if (!_scaled) Scale();
     }
 
     public void Scale()
@@ -30,17 +32,16 @@ public class CharacterScaler : MonoBehaviour
         var sr = GetComponent<SpriteRenderer>();
         if (sr == null || sr.sprite == null) return;
 
+        // Reset first so we measure natural sprite height
         transform.localScale = Vector3.one;
+        float sprH = sr.bounds.size.y;
+        if (sprH <= 0f) return;
 
-        float spriteHeight = sr.bounds.size.y;
-        if (spriteHeight <= 0f) return;
+        float targetH = Camera.main.orthographicSize * 2f * heightFraction;
+        float s       = targetH / sprH;
 
-        float visibleHeight = Camera.main.orthographicSize * 2f;
-        float targetHeight  = visibleHeight * heightFraction;
-        float scale         = targetHeight / spriteHeight;
-
-        transform.localScale = new Vector3(scale, scale, 1f);
-        transform.position = new Vector3(
+        transform.localScale = new Vector3(s, s, 1f);
+        transform.position   = new Vector3(
             Camera.main.transform.position.x,
             Camera.main.transform.position.y + verticalOffset,
             transform.position.z);

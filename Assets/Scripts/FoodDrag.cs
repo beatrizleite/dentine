@@ -1,195 +1,171 @@
 using UnityEngine;
 
+/// Drag-and-drop food item for Level 1.
+/// Supports both mouse (editor/PC) and single-touch (mobile).
+/// Tags:  "Healthy"   → Target_Good
+///        "Unhealthy" → Target_Bad
 public class FoodDrag : MonoBehaviour
 {
-    /// Set true while tutorial plays — blocks all drag input.
-    public static bool tutorialActive = false;
-    /// True whenever any food is being dragged (used by hint to reset timer).
-    public static bool anyDragActive  = false;
+    // ── Static flags shared across all food instances ─────────────────────
 
-    private Vector3 startPosition;
-    private Vector3 originalScale;
-    private bool isDragging = false;
-    private bool isLocked = false;
+    /// Blocks all drag input while the tutorial is playing.
+    public static bool tutorialActive;
 
-    private SpriteRenderer mySprite;
-    private Vector3 offset;
+    /// True while any food is being dragged (used by Level1GhostHint).
+    public static bool anyDragActive;
+
+    // ── Private state ─────────────────────────────────────────────────────
+
+    Vector3        _startPos;
+    Vector3        _originalScale;
+    Vector3        _dragOffset;
+    bool           _isDragging;
+    bool           _isLocked;
+    SpriteRenderer _sr;
+
+    // ── Unity ─────────────────────────────────────────────────────────────
 
     void Start()
     {
-        startPosition = transform.position;
-        originalScale = transform.localScale;
-        mySprite = GetComponent<SpriteRenderer>();
+        _startPos      = transform.position;
+        _originalScale = transform.localScale;
+        _sr            = GetComponent<SpriteRenderer>();
     }
 
-    // ======================
-    // MOUSE (PC)
-    // ======================
+    // ── Mouse input (editor / PC) ─────────────────────────────────────────
+
     void OnMouseDown()
     {
-        if (isLocked || tutorialActive) return;
-
-        isDragging = true;
-        anyDragActive = true;
-
-        Vector3 pointerWorldPos = GetPointerWorldPosition();
-        offset = transform.position - pointerWorldPos;
-
-        transform.localScale = originalScale * 1.2f;
+        if (_isLocked || tutorialActive) return;
+        BeginDrag(PointerToWorld(Input.mousePosition));
     }
 
     void OnMouseDrag()
     {
-        if (!isDragging) return;
-
-        Vector3 pointerWorldPos = GetPointerWorldPosition();
-        transform.position = new Vector3(
-            pointerWorldPos.x + offset.x,
-            pointerWorldPos.y + offset.y,
-            transform.position.z
-        );
+        if (!_isDragging) return;
+        MoveTo(PointerToWorld(Input.mousePosition));
     }
 
     void OnMouseUp()
     {
-        if (!isDragging) return;
-
-        isDragging = false;
-        anyDragActive = false;
-        transform.localScale = originalScale;
-        CheckDrop();
+        if (!_isDragging) return;
+        EndDrag();
     }
 
-    // ======================
-    // TOUCH (MOBILE)
-    // ======================
+    // ── Touch input (mobile) ──────────────────────────────────────────────
+
     void Update()
     {
-        if (isLocked || tutorialActive) return;
-        if (Input.touchCount == 0) return;
+        if (_isLocked || tutorialActive || Input.touchCount == 0) return;
 
-        Touch touch = Input.GetTouch(0);
-        Vector3 touchWorldPos = GetPointerWorldPosition(touch.position);
+        Touch touch     = Input.GetTouch(0);
+        Vector3 worldPos = PointerToWorld(touch.position);
 
         switch (touch.phase)
         {
             case TouchPhase.Began:
-                Collider2D hit = Physics2D.OverlapPoint(touchWorldPos);
+                var hit = Physics2D.OverlapPoint(worldPos);
                 if (hit != null && hit.gameObject == gameObject)
-                {
-                    isDragging = true;
-                    offset = transform.position - touchWorldPos;
-                    transform.localScale = originalScale * 1.2f;
-                }
+                    BeginDrag(worldPos);
                 break;
 
             case TouchPhase.Moved:
-                if (isDragging)
-                {
-                    transform.position = new Vector3(
-                        touchWorldPos.x + offset.x,
-                        touchWorldPos.y + offset.y,
-                        transform.position.z
-                    );
-                }
+                if (_isDragging) MoveTo(worldPos);
                 break;
 
             case TouchPhase.Ended:
             case TouchPhase.Canceled:
-                if (isDragging)
-                {
-                    isDragging = false;
-                    transform.localScale = originalScale;
-                    CheckDrop();
-                }
+                if (_isDragging) EndDrag();
                 break;
         }
     }
 
-    // ======================
-    // HELPERS
-    // ======================
-    Vector3 GetPointerWorldPosition()
+    // ── Drag helpers ──────────────────────────────────────────────────────
+
+    void BeginDrag(Vector3 worldPos)
     {
-        return GetPointerWorldPosition(Input.mousePosition);
+        _isDragging    = true;
+        anyDragActive  = true;
+        _dragOffset    = transform.position - worldPos;
+        transform.localScale = _originalScale * 1.2f;
     }
 
-    Vector3 GetPointerWorldPosition(Vector2 screenPos)
+    void MoveTo(Vector3 worldPos)
     {
-        Vector3 pos = Camera.main.ScreenToWorldPoint(screenPos);
-        pos.z = 0;
-        return pos;
+        transform.position = new Vector3(
+            worldPos.x + _dragOffset.x,
+            worldPos.y + _dragOffset.y,
+            transform.position.z);
     }
 
-    // ======================
-    // DROP LOGIC
-    // ======================
+    void EndDrag()
+    {
+        _isDragging   = false;
+        anyDragActive = false;
+        transform.localScale = _originalScale;
+        CheckDrop();
+    }
+
+    // ── Drop logic ────────────────────────────────────────────────────────
+
     void CheckDrop()
     {
-        Collider2D[] hits = Physics2D.OverlapBoxAll(
-            transform.position,
-            new Vector2(0.5f, 0.5f),
-            0
-        );
+        var hits = Physics2D.OverlapBoxAll(transform.position, new Vector2(0.5f, 0.5f), 0f);
 
-        foreach (Collider2D hit in hits)
+        foreach (var col in hits)
         {
-            if (!hit.isTrigger) continue;
+            if (!col.isTrigger) continue;
 
-            // CORRECT
-            if ((CompareTag("Healthy") && hit.name == "Target_Good") ||
-                (CompareTag("Unhealthy") && hit.name == "Target_Bad"))
+            bool isHealthy   = CompareTag("Healthy");
+            bool isGoodTarget = col.name == "Target_Good";
+            bool isBadTarget  = col.name == "Target_Bad";
+
+            if ((isHealthy && isGoodTarget) || (!isHealthy && isBadTarget))
             {
-                Success(hit.transform.position);
+                OnCorrectDrop(col.transform.position);
                 return;
             }
 
-            // WRONG
-            if ((CompareTag("Healthy") && hit.name == "Target_Bad") ||
-                (CompareTag("Unhealthy") && hit.name == "Target_Good"))
+            if ((isHealthy && isBadTarget) || (!isHealthy && isGoodTarget))
             {
-                Error();
+                OnWrongDrop();
                 return;
             }
         }
 
-        // Drop no vazio
-        transform.position = startPosition;
+        // Dropped in empty space — return to start
+        transform.position = _startPos;
     }
 
-    void Success(Vector3 targetPos)
+    void OnCorrectDrop(Vector3 targetPos)
     {
         transform.position = targetPos;
-
+        if (_sr != null) _sr.color = Color.green;
         Destroy(gameObject, 0.2f);
-
-        if (mySprite != null)
-            mySprite.color = Color.green;
-
-        if (Level1Manager.instance != null)
-        {
-            Level1Manager.instance.FoodCorrect();
-        }
+        Level1Manager.instance?.FoodDropped();
     }
 
-    void Error()
+    void OnWrongDrop()
     {
-        isLocked = true;
-        isDragging = false;
-
-        if (mySprite != null)
-            mySprite.color = Color.red;
-
+        _isLocked  = true;
+        _isDragging = false;
+        if (_sr != null) _sr.color = Color.red;
         Invoke(nameof(ResetToStart), 0.5f);
     }
 
     void ResetToStart()
     {
-        transform.position = startPosition;
+        transform.position = _startPos;
+        if (_sr != null) _sr.color = Color.white;
+        _isLocked = false;
+    }
 
-        if (mySprite != null)
-            mySprite.color = Color.white;
+    // ── Utility ───────────────────────────────────────────────────────────
 
-        isLocked = false;
+    static Vector3 PointerToWorld(Vector2 screenPos)
+    {
+        var p = Camera.main.ScreenToWorldPoint(screenPos);
+        p.z = 0f;
+        return p;
     }
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(Collider2D))]
 public class TongueScrubZone : MonoBehaviour
 {
-    public float scrubDuration = 0.4f;
+    public float scrubDuration = 0.8f;
     public Sprite foamSprite;
 
     // ── statics ───────────────────────────────────────────────────────────
@@ -71,15 +71,15 @@ public class TongueScrubZone : MonoBehaviour
         }
     }
 
-    // Direct transform-based AABB — no Physics2D latency
+    const float brushRadius = 0.35f;
     bool BrushHeadInside(Vector3 p)
     {
         var box = col as BoxCollider2D;
         if (box == null) return false;
         Vector2 wc = col.transform.TransformPoint(box.offset);
         Vector3 ls = col.transform.lossyScale;
-        float hx = box.size.x * 0.5f * Mathf.Abs(ls.x);
-        float hy = box.size.y * 0.5f * Mathf.Abs(ls.y);
+        float hx = box.size.x * 0.5f * Mathf.Abs(ls.x) + brushRadius;
+        float hy = box.size.y * 0.5f * Mathf.Abs(ls.y) + brushRadius;
         return p.x >= wc.x - hx && p.x <= wc.x + hx &&
                p.y >= wc.y - hy && p.y <= wc.y + hy;
     }

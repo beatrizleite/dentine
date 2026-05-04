@@ -1,80 +1,73 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// Manages character selection on the character-select screen.
+/// Highlights the chosen character, stores the choice in PlayerPrefs, and
+/// advances to the next scene.
 public class CharacterController : MonoBehaviour
 {
-    [Header("Character Options")]
+    [Header("Characters")]
     public CharacterOption[] characterOptions;
 
-    [Header("UI")]
+    [Header("UI / Navigation")]
     public GameObject btnAdvance;
-    public string nextSceneName = "Level1";
+    public string     nextSceneName = "Level1";
 
-    private int selectedId = -1; 
-    private readonly float scaleFactor = 1.1f;
+    // How much to scale up the selected character
+    const float SelectedScale = 1.1f;
+
+    int _selectedId = -1;
+
+    // ── Unity ─────────────────────────────────────────────────────────────
 
     void Start()
     {
-        // Start with the "Advance" button hidden
         btnAdvance.SetActive(false);
 
-        // Ensure no character has the light on at the start
-        foreach (var charOpt in characterOptions)
+        foreach (var opt in characterOptions)
         {
-            charOpt.initialScale = charOpt.characterTransform.localScale;
-
-            if(charOpt.lightObject != null) charOpt.lightObject.SetActive(false);
-            
-            charOpt.characterTransform.localScale = charOpt.initialScale;
+            opt.initialScale = opt.characterTransform.localScale;
+            if (opt.lightObject != null) opt.lightObject.SetActive(false);
         }
     }
 
-    // Call this function when you click on a character (Character Button)
+    // ── Public API (wired to UI buttons) ──────────────────────────────────
+
+    /// Called by each character button with its unique id.
     public void SelectCharacter(int id)
     {
-        selectedId = id;
-
-        // Show the "Advance" button
+        _selectedId = id;
         btnAdvance.SetActive(true);
 
-        // Update the visual of ALL characters
-        foreach (var charOpt in characterOptions)
+        foreach (var opt in characterOptions)
         {
-            if (charOpt.id == id)
-            {
-                if(charOpt.lightObject != null) charOpt.lightObject.SetActive(true);
-                
-                charOpt.characterTransform.localScale = charOpt.initialScale * scaleFactor;
-            }
-            else
-            {
-                if(charOpt.lightObject != null) charOpt.lightObject.SetActive(false);
-                
-                charOpt.characterTransform.localScale = charOpt.initialScale;
-            }
+            bool chosen = opt.id == id;
+            if (opt.lightObject != null) opt.lightObject.SetActive(chosen);
+            opt.characterTransform.localScale = chosen
+                ? opt.initialScale * SelectedScale
+                : opt.initialScale;
         }
     }
 
+    /// Saves the choice and loads the next scene.
     public void ConfirmAndPlay()
     {
-        if (selectedId != -1)
-        {
-            // Now we save the definitive choice
-            PlayerPrefs.SetInt("characterChosen", selectedId);
-            PlayerPrefs.Save();
+        if (_selectedId < 0) return;
 
-            // Change scene
-            SceneManager.LoadScene(nextSceneName);
-        }
+        PlayerPrefs.SetInt("characterChosen", _selectedId);
+        PlayerPrefs.Save();
+        SceneManager.LoadScene(nextSceneName);
     }
 }
 
+/// Serialisable data for a single selectable character.
 [System.Serializable]
 public class CharacterOption
 {
-    public string name;
-    public int id;
+    public string    name;
+    public int       id;
     public Transform characterTransform;
     public GameObject lightObject;
+
     [HideInInspector] public Vector3 initialScale;
 }

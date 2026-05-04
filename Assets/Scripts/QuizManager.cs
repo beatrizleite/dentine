@@ -84,20 +84,17 @@ public class QuizManager : MonoBehaviour
             if (levelData.levelName == levelName)
             {
                 currentLevelData = levelData;
-                Debug.Log($"Loaded quiz for {levelName}");
-                return;
+                        return;
             }
         }
         
         if (levelQuizzes.Length > 0)
         {
             currentLevelData = levelQuizzes[0];
-            Debug.LogWarning($"Level {levelName} not found, using {currentLevelData.levelName}");
         }
         else
         {
-            Debug.LogError("No quiz data configured!");
-        }
+            }
     }
 
     void LoadQuestion(int index)
@@ -282,7 +279,6 @@ public class QuizManager : MonoBehaviour
         {
             PlayerPrefs.SetInt(saveKey, stars);
             PlayerPrefs.Save();
-            Debug.Log($"Saved {stars} stars for {currentLevelData.levelName}");
         }
     }
 

@@ -1,31 +1,25 @@
 using UnityEngine;
 
+/// Reads the character choice stored in PlayerPrefs and assigns the matching
+/// sprite to this object's SpriteRenderer at startup.
 public class PlayerLoader : MonoBehaviour
 {
+    [Header("Character Sprites")]
     public Sprite spriteChar1;
     public Sprite spriteChar2;
     public Sprite spriteChar3;
 
-    private SpriteRenderer myRender;
-
     void Start()
     {
-        myRender = GetComponent<SpriteRenderer>();
+        int choice = PlayerPrefs.GetInt("characterChosen", 0);
+        var sr = GetComponent<SpriteRenderer>();
+        if (sr == null) return;
 
-        // Goes to the PlayerPrefs to get the chosen character
-        int choice = PlayerPrefs.GetInt("characterChosen");
-
-        if (choice == 0)
+        sr.sprite = choice switch
         {
-            myRender.sprite = spriteChar1;
-        }
-        else if (choice == 1)
-        {
-            myRender.sprite = spriteChar2;
-        }
-        else
-        {
-            myRender.sprite = spriteChar3;
-        }
+            0 => spriteChar1,
+            1 => spriteChar2,
+            _ => spriteChar3,
+        };
     }
 }

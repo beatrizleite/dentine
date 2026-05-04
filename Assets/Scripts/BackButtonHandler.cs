@@ -2,49 +2,48 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.InputSystem;
 
+/// Handles the hardware/keyboard back button.
+/// Shows an exit popup and pauses the game; routes to the main menu on confirm.
 public class BackButtonHandler : MonoBehaviour
 {
-    [Header("ExitPopup Panel")]
+    [Header("Exit Popup")]
     public GameObject exitPopup;
 
-    [Header("Main Menu Scene Name")]
-    public string menuSceneName = "DentineMenu"; 
+    [Header("Scene Names")]
+    public string menuSceneName = "DentineMenu";
+
+    // ── Unity ─────────────────────────────────────────────────────────────
 
     void Start()
     {
-        if(exitPopup != null) exitPopup.SetActive(false);
+        if (exitPopup != null) exitPopup.SetActive(false);
     }
 
     void Update()
     {
-        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
-        {
-            if (exitPopup.activeSelf)
-            {
-                ClosePopup();
-            }
-            else
-            {
-                OpenPopup();
-            }
-        }
+        if (Keyboard.current == null) return;
+
+        if (Keyboard.current.escapeKey.wasPressedThisFrame)
+            SetPopupVisible(!exitPopup.activeSelf);
     }
 
-    public void OpenPopup()
-    {
-        exitPopup.SetActive(true);
-        Time.timeScale = 0f;
-    }
+    // ── Public API ────────────────────────────────────────────────────────
 
-    public void ClosePopup()
-    {
-        exitPopup.SetActive(false);
-        Time.timeScale = 1f;
-    }
+    public void OpenPopup()  => SetPopupVisible(true);
+    public void ClosePopup() => SetPopupVisible(false);
 
+    /// Navigates back to the main menu and resumes time.
     public void ConfirmExit()
     {
         Time.timeScale = 1f;
         SceneManager.LoadScene(menuSceneName);
+    }
+
+    // ── Helpers ───────────────────────────────────────────────────────────
+
+    void SetPopupVisible(bool visible)
+    {
+        if (exitPopup != null) exitPopup.SetActive(visible);
+        Time.timeScale = visible ? 0f : 1f;
     }
 }
