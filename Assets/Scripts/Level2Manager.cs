@@ -30,8 +30,9 @@ public class Level2Manager : MonoBehaviour
     public HintManager hintManager;
 
     // ── phases ────────────────────────────────────────────────────────────
-    private enum Phase { BrushTeeth, Rinse1, BrushTongue, Rinse2, Done }
+    public enum Phase { BrushTeeth, Rinse1, BrushTongue, Rinse2, Done }
     private Phase phase = Phase.BrushTeeth;
+    public Phase CurrentPhase => phase;
 
     private bool  rinsing   = false;
     private bool  levelDone = false;

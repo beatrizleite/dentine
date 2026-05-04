@@ -50,6 +50,11 @@ public class QuizManager : MonoBehaviour
     [Header("All Level Quiz Data")]
     public LevelQuizData[] levelQuizzes;
     
+    [Header("Star Sprites")]
+    public UnityEngine.UI.Image[] starImages5;   // always 5 slots
+    public Sprite starFilled;
+    public Sprite starEmpty;
+
     [Header("Visual Feedback")]
     public Color wrongAnswerColor = Color.red;
     public float shakeDuration = 0.5f;
@@ -253,10 +258,17 @@ public class QuizManager : MonoBehaviour
         
         int stars = CalculateStars(correctAnswers, totalQuestions);
         SaveStars(stars);
-        
-        for (int i = 0; i < starImages.Length; i++)
+
+        // Use starImages5 (always 5 visible) with filled/empty sprites
+        var displayArr = (starImages5 != null && starImages5.Length > 0) ? starImages5 : starImages;
+        for (int i = 0; i < displayArr.Length; i++)
         {
-            starImages[i].enabled = i < stars;
+            if (displayArr[i] == null) continue;
+            displayArr[i].enabled = true;
+            if (starFilled != null && starEmpty != null)
+                displayArr[i].sprite = i < stars ? starFilled : starEmpty;
+            else
+                displayArr[i].enabled = i < stars;
         }
     }
 

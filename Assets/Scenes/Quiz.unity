@@ -176,7 +176,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 4815476061570213978, guid: f3903b226b74c4a56a6bf8b86201ae33, type: 3}
+  m_Sprite: {fileID: -4084898531574359613, guid: e4438d42dc78e49a2b36f919a46ee25e, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -631,7 +631,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 4815476061570213978, guid: f3903b226b74c4a56a6bf8b86201ae33, type: 3}
+  m_Sprite: {fileID: -4084898531574359613, guid: e4438d42dc78e49a2b36f919a46ee25e, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -851,7 +851,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 4815476061570213978, guid: f3903b226b74c4a56a6bf8b86201ae33, type: 3}
+  m_Sprite: {fileID: -4084898531574359613, guid: e4438d42dc78e49a2b36f919a46ee25e, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1137,7 +1137,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 4815476061570213978, guid: f3903b226b74c4a56a6bf8b86201ae33, type: 3}
+  m_Sprite: {fileID: -4084898531574359613, guid: e4438d42dc78e49a2b36f919a46ee25e, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -1548,8 +1548,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -130, y: -50.000015}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 0, y: -50.000015}
+  m_SizeDelta: {x: 620, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1111155444
 MonoBehaviour:
@@ -2385,7 +2385,7 @@ MonoBehaviour:
       option1:
         type: 1
         text: 
-        image: {fileID: 1352961961597019730, guid: cbcafd3e508c94c768f6111f4f72d0d5, type: 3}
+        image: {fileID: 21300000, guid: cbcafd3e508c94c768f6111f4f72d0d5, type: 3}
       option2:
         type: 1
         text: 
@@ -2396,44 +2396,44 @@ MonoBehaviour:
       option1:
         type: 1
         text: 
-        image: {fileID: -5209720356119618007, guid: 6cf4828affa6349ff8b2f8fac545d267, type: 3}
+        image: {fileID: 21300000, guid: 6cf4828affa6349ff8b2f8fac545d267, type: 3}
       option2:
         type: 1
         text: 
-        image: {fileID: -4470592730861715767, guid: 6d553d049882d41f9b1f4e359dd34128, type: 3}
+        image: {fileID: 21300000, guid: 6d553d049882d41f9b1f4e359dd34128, type: 3}
       correctAnswerIndex: 1
     - questionText: "O que pode causar c\xE1rie dent\xE1ria?"
       questionAudio: {fileID: 0}
       option1:
         type: 1
         text: 
-        image: {fileID: 4189502365709195648, guid: 9504076cadd414a57bd44a1df9fe79ae, type: 3}
+        image: {fileID: 21300000, guid: 9504076cadd414a57bd44a1df9fe79ae, type: 3}
       option2:
         type: 1
         text: 
-        image: {fileID: -7832214784768987486, guid: a16666eacfadd4c9d878e61088a6c815, type: 3}
+        image: {fileID: 21300000, guid: a16666eacfadd4c9d878e61088a6c815, type: 3}
       correctAnswerIndex: 0
     - questionText: Qual a bebida melhor para os teus dentes?
       questionAudio: {fileID: 0}
       option1:
         type: 1
         text: 
-        image: {fileID: 8509550459451208454, guid: 82a46a22756324eadb82b41213b81b25, type: 3}
+        image: {fileID: 21300000, guid: 82a46a22756324eadb82b41213b81b25, type: 3}
       option2:
         type: 1
         text: 
-        image: {fileID: 2138416828236337748, guid: 1015f6d4cc75e4386a79afff3878f5b8, type: 3}
+        image: {fileID: 21300000, guid: 1015f6d4cc75e4386a79afff3878f5b8, type: 3}
       correctAnswerIndex: 0
     - questionText: "O que acontece quando comes alimentos saud\xE1veis?"
       questionAudio: {fileID: 0}
       option1:
         type: 1
         text: 
-        image: {fileID: 5275257091155199138, guid: 7b8b1fb832be4412398f11614414b6ca, type: 3}
+        image: {fileID: 21300000, guid: 7b8b1fb832be4412398f11614414b6ca, type: 3}
       option2:
         type: 1
         text: 
-        image: {fileID: 6402896907047545023, guid: 6b0b798f5c64e4570ae6f8ca0cf7db30, type: 3}
+        image: {fileID: 21300000, guid: 6b0b798f5c64e4570ae6f8ca0cf7db30, type: 3}
       correctAnswerIndex: 0
     returnScene: DentineMenu
     nextScene: Level2
@@ -2483,57 +2483,86 @@ MonoBehaviour:
         text: "N\xE3o"
         image: {fileID: 0}
       correctAnswerIndex: 0
+    - questionText: "O que fazemos ap\xF3s escovar os dentes?"
+      questionAudio: {fileID: 0}
+      option1:
+        type: 0
+        text: "Ir para a cama \U0001F319"
+        image: {fileID: 0}
+      option2:
+        type: 0
+        text: "Comer doces \U0001F36C"
+        image: {fileID: 0}
+      correctAnswerIndex: 0
     returnScene: DentineMenu
     nextScene: Level3
   - levelName: Level3
     questions:
-    - questionText: Como ficam os nossos dentes depois de ir ao dentista?
+    - questionText: "O m\xE9dico dentista \xE9 amiguinho do \"Escovinha\" ou da \"Cari\xF3lica\"?"
       questionAudio: {fileID: 0}
       option1:
-        type: 1
-        text: 
-        image: {fileID: 5275257091155199138, guid: 7b8b1fb832be4412398f11614414b6ca, type: 3}
+        type: 0
+        text: "Escovinha \U0001FAA5"
+        image: {fileID: 0}
       option2:
-        type: 1
-        text: 
-        image: {fileID: 6402896907047545023, guid: 6b0b798f5c64e4570ae6f8ca0cf7db30, type: 3}
+        type: 0
+        text: "Cari\xF3lica \U0001F9A0"
+        image: {fileID: 0}
       correctAnswerIndex: 0
-    - questionText: "Qual \xE9 a ferramenta que ajuda o dentista a ver os dentes
-        escondidos no fundo da boca?"
+    - questionText: "O qu\xEA acontece na consulta de medicina dent\xE1ria?"
       questionAudio: {fileID: 0}
       option1:
-        type: 1
-        text: 
-        image: {fileID: 21300000, guid: 6d45db88da4a444e7aa1c1313f830914, type: 3}
+        type: 0
+        text: "Cuidar dos dentes \U0001F9B7"
+        image: {fileID: 0}
       option2:
-        type: 1
-        text: 
-        image: {fileID: 21300000, guid: 16324b6c714e24a2dadce8cba58b199e, type: 3}
-      correctAnswerIndex: 1
-    - questionText: "O que \xE9 usado para esfregar os teus dentes?"
+        type: 0
+        text: "Vender doces \U0001F36D"
+        image: {fileID: 0}
+      correctAnswerIndex: 0
+    - questionText: "O m\xE9dico dentista faz d\xF3i-d\xF3i?"
       questionAudio: {fileID: 0}
       option1:
-        type: 1
-        text: 
-        image: {fileID: 7901622571200134146, guid: bb8333e9ef5e34a3f884a7c873215da4, type: 3}
+        type: 0
+        text: "N\xE3o, ele ajuda! \U0001F60A"
+        image: {fileID: 0}
       option2:
-        type: 1
-        text: 
-        image: {fileID: 21300000, guid: badfa2ecc7c354709be60b8f39631fb5, type: 3}
-      correctAnswerIndex: 1
-    - questionText: O que ganhas no final da consulta por seres corajoso?
+        type: 0
+        text: "Sim \U0001F622"
+        image: {fileID: 0}
+      correctAnswerIndex: 0
+    - questionText: Como estamos depois da consulta?
       questionAudio: {fileID: 0}
       option1:
-        type: 1
-        text: 
-        image: {fileID: -4597436970944649126, guid: d1abd39842ac843f192fd620749287c3, type: 3}
+        type: 0
+        text: "Felizes \U0001F601"
+        image: {fileID: 0}
       option2:
-        type: 1
-        text: 
-        image: {fileID: -5149687994278512818, guid: 120c24b714e91460085f11088ee8c905, type: 3}
-      correctAnswerIndex: 1
+        type: 0
+        text: "Tristes \U0001F622"
+        image: {fileID: 0}
+      correctAnswerIndex: 0
+    - questionText: "Como ficam os dentes depois da visita ao m\xE9dico dentista?"
+      questionAudio: {fileID: 0}
+      option1:
+        type: 0
+        text: "Felizes e fortes \U0001F4AA"
+        image: {fileID: 0}
+      option2:
+        type: 0
+        text: "Tristes e fracos \U0001F61E"
+        image: {fileID: 0}
+      correctAnswerIndex: 0
     returnScene: DentineMenu
     nextScene: DentineMenu
+  starImages5:
+  - {fileID: 82124425}
+  - {fileID: 612214517}
+  - {fileID: 916574130}
+  - {fileID: 1720128231}
+  - {fileID: 648986362}
+  starFilled: {fileID: -5880838379237554283, guid: 4805ea31b5dca4b689ea3603a9c3fc2a, type: 3}
+  starEmpty: {fileID: -4084898531574359613, guid: e4438d42dc78e49a2b36f919a46ee25e, type: 3}
   wrongAnswerColor: {r: 1, g: 0, b: 0, a: 1}
   shakeDuration: 0.2
   shakeIntensity: 10
@@ -2618,7 +2647,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 4815476061570213978, guid: f3903b226b74c4a56a6bf8b86201ae33, type: 3}
+  m_Sprite: {fileID: -4084898531574359613, guid: e4438d42dc78e49a2b36f919a46ee25e, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
