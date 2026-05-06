@@ -51,7 +51,18 @@ public class ToothbrushController : MonoBehaviour
                 new Vector3(screen.x, screen.y, Mathf.Abs(_cam.transform.position.z)));
             w.z = transform.position.z;
 
-            _smoothPos = Vector3.Lerp(w, _smoothPos, lag);
+            // We want the bristle tip (BrushHeadWorld) to follow the finger.
+            // BrushHeadWorld = transform.position + headOffset_in_worldspace.
+            // So: transform.position = fingerPos - headOffset_in_worldspace.
+            // Compute head offset in world space (accounts for rotation/scale).
+            Vector3 headLocal = new Vector3(headOffsetLocal.x, headOffsetLocal.y, 0f);
+            // Use the current rotation to transform the offset direction
+            Vector3 headOffset = transform.TransformDirection(headLocal) - transform.position + transform.position;
+            // Simpler: offset = transform.rotation * (headLocal * scale)
+            Vector3 worldOffset = transform.TransformPoint(headLocal) - transform.position;
+            Vector3 targetPivot = w - worldOffset;
+
+            _smoothPos = Vector3.Lerp(targetPivot, _smoothPos, lag);
             transform.position = _smoothPos;
         }
 

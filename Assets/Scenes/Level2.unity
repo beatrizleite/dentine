@@ -2211,7 +2211,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9074eeb19e540414bb67e03e908bd1e1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToothbrushController
-  headOffsetLocal: {x: 8.5, y: 0}
+  headOffsetLocal: {x: -8.5, y: 0}
   lag: 0.06
   flipYThreshold: -0.6
 --- !u!212 &870564819
