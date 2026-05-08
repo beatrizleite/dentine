@@ -75,3 +75,14 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 # End of https://www.toptal.com/developers/gitignore/api/unity
+
+# Unity IL2CPP temp build cache
+/.utmp/
+*.bin.meta
+
+# Temp audit files
+Assets/scripts_audit.txt
+Assets/scripts_audit.txt.meta
+
+# Android build artifacts
+*.keystore

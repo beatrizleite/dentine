@@ -3,24 +3,19 @@ using System.Collections;
 
 public class ScrubGhostHint : MonoBehaviour
 {
-    [Header("Path")]
     public Vector3[] waypoints;
 
-    [Header("Animation")]
     public float sweepSpeed  = 4.5f;
     public float pauseAtTurn = 0.25f;
     public float fingerRadius = 0.28f;
 
-    [Header("Appearance")]
     [Range(0f,1f)] public float maxAlpha  = 0.75f;
     public float fadeInTime  = 0.25f;
     public float fadeOutTime = 0.35f;
 
-    private SpriteRenderer dotSR;
-    private SpriteRenderer trailSR;
-    private Coroutine animCo;
-    private Coroutine fadeCo;
-    private bool running;
+    SpriteRenderer dotSR, trailSR;
+    Coroutine animCo, fadeCo;
+    bool running;
 
     void Awake()
     {

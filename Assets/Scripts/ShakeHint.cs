@@ -23,8 +23,6 @@ public class ShakeHint : MonoBehaviour
     bool      _animating;
     Coroutine _pulseRoutine;
 
-    // ── Unity ─────────────────────────────────────────────────────────────
-
     void Awake() => gameObject.SetActive(false);
 
     void Start()
@@ -42,8 +40,6 @@ public class ShakeHint : MonoBehaviour
         phoneIcon.localRotation    = Quaternion.Euler(0f, 0f, -t * rotationAngle);
     }
 
-    // ── Public API ────────────────────────────────────────────────────────
-
     public void Show()
     {
         gameObject.SetActive(true);
@@ -60,8 +56,6 @@ public class ShakeHint : MonoBehaviour
         if (_pulseRoutine != null) { StopCoroutine(_pulseRoutine); _pulseRoutine = null; }
         gameObject.SetActive(false);
     }
-
-    // ── Coroutines ────────────────────────────────────────────────────────
 
     IEnumerator PulseArrows()
     {

@@ -19,7 +19,6 @@ public class HintManager : MonoBehaviour
     public float rotateSpeed  = 8f;
     public float bouncePixels = 16f;
 
-    // ── state ─────────────────────────────────────────────────────────────
     private float     scrubIdleTimer  = 0f;
     private float     shakeIdleTimer  = 0f;
     private bool      scrubHintActive = false;
@@ -55,7 +54,6 @@ public class HintManager : MonoBehaviour
         if (shakeHintActive && phoneIconRT != null) AnimatePhone();
     }
 
-    // ── public API ────────────────────────────────────────────────────────
     public void OnScrubActivity()
     {
         scrubIdleTimer = 0f;
@@ -84,7 +82,6 @@ public class HintManager : MonoBehaviour
         if (shakeHintActive) HideShakeHint();
     }
 
-    // ── scrub ─────────────────────────────────────────────────────────────
     void TickScrub()
     {
         if (scrubHintActive) return;
@@ -109,7 +106,6 @@ public class HintManager : MonoBehaviour
         if (scrubHideCo != null) { StopCoroutine(scrubHideCo); scrubHideCo = null; }
     }
 
-    // ── shake ─────────────────────────────────────────────────────────────
     void TickShake()
     {
         if (shakeHintActive) return;
@@ -146,8 +142,6 @@ public class HintManager : MonoBehaviour
         phoneIconRT.anchoredPosition = phoneOrigin + new Vector2(s * bouncePixels, 0f);
         phoneIconRT.localRotation    = Quaternion.Euler(0f, 0f, s * rotateAngle);
     }
-
-    // ── arc path builders ─────────────────────────────────────────────────
 
     /// Teeth path: two quadratic Bézier arcs (upper arch + lower arch).
     /// The finger sweeps left→right along the upper arch, then right→left

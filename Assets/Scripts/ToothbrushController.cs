@@ -1,4 +1,5 @@
 /// Draggable toothbrush that follows the pointer/touch each frame.
+/// The bristle tip (BrushHeadWorld) tracks the finger exactly — the handle trails behind.
 /// Mirrors vertically when cleaning lower teeth or the tongue.
 using UnityEngine;
 
@@ -8,26 +9,23 @@ public class ToothbrushController : MonoBehaviour
 
     [Header("Brush Head (local space)")]
     [Tooltip("Offset from pivot to bristle tip in local sprite units.")]
-    public Vector2 headOffsetLocal = new Vector2(8f, 0f);
+    public Vector2 headOffsetLocal = new Vector2(-8.5f, 0f);
 
     [Header("Feel")]
     [Range(0f, 0.9f)] public float lag = 0.08f;
 
     [Header("Flip Threshold")]
-    [Tooltip("World Y below which the brush flips (lower teeth / tongue).")]
+    [Tooltip("World Y below which the brush flips for lower teeth / tongue.")]
     public float flipYThreshold = -0.60f;
 
-    // ── state ─────────────────────────────────────────────────────────────
-    Camera  _cam;
-    bool    _pressing;
+    Camera _cam;
+    bool _pressing;
     Vector3 _smoothPos;
 
-    // ── public API ────────────────────────────────────────────────────────
     public bool    IsActive      => _pressing;
     public Vector3 BrushHeadWorld =>
         transform.TransformPoint(new Vector3(headOffsetLocal.x, headOffsetLocal.y, 0f));
 
-    // ── Unity ─────────────────────────────────────────────────────────────
     void Awake()
     {
         instance   = this;
@@ -51,37 +49,26 @@ public class ToothbrushController : MonoBehaviour
                 new Vector3(screen.x, screen.y, Mathf.Abs(_cam.transform.position.z)));
             w.z = transform.position.z;
 
-            // We want the bristle tip (BrushHeadWorld) to follow the finger.
-            // BrushHeadWorld = transform.position + headOffset_in_worldspace.
-            // So: transform.position = fingerPos - headOffset_in_worldspace.
-            // Compute head offset in world space (accounts for rotation/scale).
-            Vector3 headLocal = new Vector3(headOffsetLocal.x, headOffsetLocal.y, 0f);
-            // Use the current rotation to transform the offset direction
-            Vector3 headOffset = transform.TransformDirection(headLocal) - transform.position + transform.position;
-            // Simpler: offset = transform.rotation * (headLocal * scale)
-            Vector3 worldOffset = transform.TransformPoint(headLocal) - transform.position;
-            Vector3 targetPivot = w - worldOffset;
+            // Offset pivot so the bristle tip lands exactly on the finger
+            Vector3 worldOffset = transform.TransformPoint(
+                new Vector3(headOffsetLocal.x, headOffsetLocal.y, 0f)) - transform.position;
 
-            _smoothPos = Vector3.Lerp(targetPivot, _smoothPos, lag);
+            _smoothPos = Vector3.Lerp(w - worldOffset, _smoothPos, lag);
             transform.position = _smoothPos;
         }
 
         ApplyFlip();
     }
 
-    /// Flip sprite vertically when actively scrubbing lower teeth or tongue.
-    /// Only applies while the player is touching (IsActive) to avoid
-    /// flipping while the brush is hidden off-screen.
+    // Flip the sprite Y so bristles point downward for lower teeth and tongue.
+    // Only applied while pressing to avoid flipping when the brush is off-screen.
     void ApplyFlip()
     {
-        if (!_pressing) return;   // don't flip while not touching
+        if (!_pressing) return;
 
-        bool isTonguePhase = Level2Manager.instance != null &&
-                             Level2Manager.instance.CurrentPhase == Level2Manager.Phase.BrushTongue;
-
-        bool isLowerTeeth = transform.position.y < flipYThreshold;
-
-        bool faceDown = isTonguePhase || isLowerTeeth;
+        bool faceDown = (Level2Manager.instance != null &&
+                         Level2Manager.instance.CurrentPhase == Level2Manager.Phase.BrushTongue)
+                     || transform.position.y < flipYThreshold;
 
         Vector3 s = transform.localScale;
         s.y = faceDown ? -Mathf.Abs(s.y) : Mathf.Abs(s.y);

@@ -65,7 +65,6 @@ public class Level1GhostHint : MonoBehaviour
         SetGlowActive(false);
     }
 
-    // ── Tutorial ──────────────────────────────────────────────────────────
     IEnumerator RunTutorial()
     {
         yield return new WaitForSeconds(startDelay);
@@ -108,7 +107,6 @@ public class Level1GhostHint : MonoBehaviour
         hinting = false;
     }
 
-    // ── Gesture ───────────────────────────────────────────────────────────
     // Alternate which basket we show so we don't reveal the answer
     int _gestureIndex = 0;
 
@@ -187,7 +185,6 @@ public class Level1GhostHint : MonoBehaviour
         SetGlowActive(false);
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────
     void SetFingerPos(Vector3 p) { if (fingerRoot != null) fingerRoot.position = p; }
 
     void SetAlpha(float a)
@@ -221,7 +218,6 @@ public class Level1GhostHint : MonoBehaviour
         var c = sr.color; c.a = a; sr.color = c;
     }
 
-    // ── Build visuals (called in Start, fully in play mode) ───────────────
     void BuildVisuals()
     {
         var root = new GameObject("GhostHintRoot");

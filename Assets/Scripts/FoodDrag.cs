@@ -6,15 +6,11 @@ using UnityEngine;
 ///        "Unhealthy" → Target_Bad
 public class FoodDrag : MonoBehaviour
 {
-    // ── Static flags shared across all food instances ─────────────────────
-
     /// Blocks all drag input while the tutorial is playing.
     public static bool tutorialActive;
 
     /// True while any food is being dragged (used by Level1GhostHint).
     public static bool anyDragActive;
-
-    // ── Private state ─────────────────────────────────────────────────────
 
     Vector3        _startPos;
     Vector3        _originalScale;
@@ -23,16 +19,12 @@ public class FoodDrag : MonoBehaviour
     bool           _isLocked;
     SpriteRenderer _sr;
 
-    // ── Unity ─────────────────────────────────────────────────────────────
-
     void Start()
     {
         _startPos      = transform.position;
         _originalScale = transform.localScale;
         _sr            = GetComponent<SpriteRenderer>();
     }
-
-    // ── Mouse input (editor / PC) ─────────────────────────────────────────
 
     void OnMouseDown()
     {
@@ -51,8 +43,6 @@ public class FoodDrag : MonoBehaviour
         if (!_isDragging) return;
         EndDrag();
     }
-
-    // ── Touch input (mobile) ──────────────────────────────────────────────
 
     void Update()
     {
@@ -80,8 +70,6 @@ public class FoodDrag : MonoBehaviour
         }
     }
 
-    // ── Drag helpers ──────────────────────────────────────────────────────
-
     void BeginDrag(Vector3 worldPos)
     {
         _isDragging    = true;
@@ -105,8 +93,6 @@ public class FoodDrag : MonoBehaviour
         transform.localScale = _originalScale;
         CheckDrop();
     }
-
-    // ── Drop logic ────────────────────────────────────────────────────────
 
     void CheckDrop()
     {
@@ -159,8 +145,6 @@ public class FoodDrag : MonoBehaviour
         if (_sr != null) _sr.color = Color.white;
         _isLocked = false;
     }
-
-    // ── Utility ───────────────────────────────────────────────────────────
 
     static Vector3 PointerToWorld(Vector2 screenPos)
     {

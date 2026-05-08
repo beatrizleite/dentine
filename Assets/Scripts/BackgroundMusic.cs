@@ -1,19 +1,13 @@
 using UnityEngine;
 
-/// Keeps background music alive across scene loads using the singleton pattern.
-/// Only one instance is allowed at a time; duplicates are destroyed.
+// Keeps music playing across scene loads. Destroys duplicates.
 public class BackgroundMusic : MonoBehaviour
 {
     static BackgroundMusic _instance;
 
     void Awake()
     {
-        if (_instance != null)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
+        if (_instance != null) { Destroy(gameObject); return; }
         _instance = this;
         DontDestroyOnLoad(gameObject);
     }

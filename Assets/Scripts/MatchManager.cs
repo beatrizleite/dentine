@@ -8,7 +8,6 @@ public class MatchManager : MonoBehaviour
 {
     public static MatchManager instance;
 
-    // ── Tool data ─────────────────────────────────────────────────────────
     [System.Serializable]
     public class ToolConfig
     {
@@ -50,7 +49,6 @@ public class MatchManager : MonoBehaviour
     public string levelID       = "Level3";
     public string quizSceneName = "Quiz";
 
-    // ── runtime state ─────────────────────────────────────────────────────
     readonly List<Card>   allCards       = new();
     readonly List<Vector3> gridPositions   = new();
     Card                firstFlipped;
@@ -66,13 +64,11 @@ public class MatchManager : MonoBehaviour
     }
     int                 totalPairs;
 
-    // ── static sprite cache ───────────────────────────────────────────────
     static Sprite s_cardBack;
     static Sprite s_shadow;
     static Sprite s_glow;
     static readonly Sprite[] s_placeholders = new Sprite[8];
 
-    // ── Unity ─────────────────────────────────────────────────────────────
     void Awake()
     {
         instance = this;
@@ -182,7 +178,6 @@ public class MatchManager : MonoBehaviour
         locked = false;
     }
 
-    // ── grid construction ─────────────────────────────────────────────────
     void BuildGrid()
     {
         // Ordered pairs so player can clearly see all tools face-up:
@@ -288,7 +283,6 @@ public class MatchManager : MonoBehaviour
         return card;
     }
 
-    // ── game logic ────────────────────────────────────────────────────────
     public void OnCardClicked(Card card)
     {
         if (locked || card.IsUp) return;
@@ -326,7 +320,6 @@ public class MatchManager : MonoBehaviour
         }
     }
 
-    // ── info panel ────────────────────────────────────────────────────────
     void ShowInfoPanel(int toolId)
     {
         var cfg = tools[toolId % tools.Length];
@@ -387,7 +380,6 @@ public class MatchManager : MonoBehaviour
         QuizManager.LoadQuizForLevel(levelID, quizSceneName);
     }
 
-    // ── sprite factory ────────────────────────────────────────────────────
     static void BuildSharedSprites()
     {
         s_cardBack = MakeCardBack(256, 256);
@@ -421,7 +413,6 @@ public class MatchManager : MonoBehaviour
         }
     }
 
-    // ── procedural sprites ────────────────────────────────────────────────
     static Sprite MakeCardBack(int w, int h)
     {
         var tex = new Texture2D(w, h, TextureFormat.RGBA32, false);

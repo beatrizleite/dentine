@@ -12,50 +12,37 @@ public class Level2Manager : MonoBehaviour
     public SpriteRenderer gargleRenderer;
     public SpriteRenderer dirtyTongueRenderer;
 
-    [Header("Toothbrush")]
-    public GameObject toothbrush;
+    public GameObject  toothbrush;
+    public string      levelID       = "Level2";
+    public string      quizSceneName = "Quiz";
 
-    [Header("Hint")]
-    public GameObject hintArrow;
+    [Header("Gargle")]
+    public float shakeDurationNeeded = 2f;
+    public float shakeThreshold      = 1.2f;
 
-    [Header("Quiz Config")]
-    public string levelID = "Level2";
-    public string quizSceneName = "Quiz";
-
-    [Header("Shake to Rinse")]
-    public float shakeDurationNeeded = 1f;
-    public float shakeThreshold = 2.5f;
-
-    [Header("Hint Manager")]
     public HintManager hintManager;
 
-    // ── phases ────────────────────────────────────────────────────────────
     public enum Phase { BrushTeeth, Rinse1, BrushTongue, Rinse2, Done }
-    private Phase phase = Phase.BrushTeeth;
-    public Phase CurrentPhase => phase;
+    Phase _phase = Phase.BrushTeeth;
+    public Phase CurrentPhase => _phase;
 
-    private bool  rinsing   = false;
-    private bool  levelDone = false;
-    private float shakeTimer = 0f;
+    bool  _rinsing;
+    bool  _done;
+    float _shakeTimer;
 
-    void Awake() { instance = this; }
+    void Awake() => instance = this;
 
     void Start()
     {
         ShowOnly(dirtyTeethRenderer);
-        SetInactive(cleanTeethRenderer);
-        SetInactive(gargleRenderer);
-        SetInactive(dirtyTongueRenderer);
-        if (hintArrow != null) hintArrow.SetActive(false);
-        SetBrush(true);   // brush visible during first scrub phase
+        SetBrush(true);
     }
 
     void Update()
     {
-        if (rinsing && !levelDone) ProcessShake();
+        if (_rinsing && !_done) HandleShake();
     }
 
-    // ── called by ToothScrubZone ──────────────────────────────────────────
     public void OnScrubActivity()
     {
         if (hintManager != null) hintManager.OnScrubActivity();
@@ -63,81 +50,78 @@ public class Level2Manager : MonoBehaviour
 
     public void OnCleaningProgress(float progress)
     {
-        if (progress >= 1f && phase == Phase.BrushTeeth)
-            StartCoroutine(TransitionToRinse1());
+        if (progress >= 1f && _phase == Phase.BrushTeeth)
+            StartCoroutine(GoToRinse1());
     }
 
-    // ── called by TongueScrubZone ─────────────────────────────────────────
     public void OnTongueProgress(float progress)
     {
         if (hintManager != null) hintManager.OnScrubActivity();
-        if (progress >= 1f && phase == Phase.BrushTongue)
-            StartCoroutine(TransitionToRinse2());
+        if (progress >= 1f && _phase == Phase.BrushTongue)
+            StartCoroutine(GoToRinse2());
     }
 
-    // ── Phase transitions ─────────────────────────────────────────────────
-    IEnumerator TransitionToRinse1()
+    IEnumerator GoToRinse1()
     {
-        phase = Phase.Rinse1;
+        _phase = Phase.Rinse1;
         SetBrush(false);
         ShowOnly(gargleRenderer);
-        StartShake();
+        StartRinse();
         yield return null;
     }
 
-    IEnumerator TransitionToRinse2()
+    IEnumerator GoToRinse2()
     {
-        phase = Phase.Rinse2;
+        _phase = Phase.Rinse2;
         SetBrush(false);
         ShowOnly(gargleRenderer);
-        StartShake();
+        StartRinse();
         yield return null;
     }
 
-    void StartShake()
+    void StartRinse()
     {
-        rinsing    = true;
-        shakeTimer = 0f;
+        _rinsing    = true;
+        _shakeTimer = 0f;
         if (hintManager != null) hintManager.EnterRinsePhase();
     }
 
-    void ProcessShake()
+    void HandleShake()
     {
-        bool shaking = false;
+        bool shaking;
 #if UNITY_EDITOR
-        if (UnityEngine.InputSystem.Keyboard.current != null)
-            shaking = UnityEngine.InputSystem.Keyboard.current.spaceKey.isPressed;
+        shaking = UnityEngine.InputSystem.Keyboard.current != null &&
+                  UnityEngine.InputSystem.Keyboard.current.spaceKey.isPressed;
 #else
         shaking = Input.acceleration.magnitude > shakeThreshold;
 #endif
-        if (shaking)
-        {
-            if (hintManager != null) hintManager.OnShakeActivity();
-            shakeTimer += Time.deltaTime;
-            if (shakeTimer >= shakeDurationNeeded) FinishShake();
-        }
+        if (!shaking) return;
+
+        if (hintManager != null) hintManager.OnShakeActivity();
+        _shakeTimer += Time.deltaTime;
+        if (_shakeTimer >= shakeDurationNeeded) FinishRinse();
     }
 
-    void FinishShake()
+    void FinishRinse()
     {
-        rinsing = false;
+        _rinsing = false;
 
-        if (phase == Phase.Rinse1)
+        if (_phase == Phase.Rinse1)
         {
-            phase = Phase.BrushTongue;
+            _phase = Phase.BrushTongue;
             ShowOnly(dirtyTongueRenderer);
-            SetBrush(true);    // brush back for tongue phase
+            SetBrush(true);
             if (hintManager != null) hintManager.ExitRinsePhase();
         }
-        else if (phase == Phase.Rinse2)
+        else if (_phase == Phase.Rinse2)
         {
-            phase = Phase.Done;
-            levelDone = true;
-            StartCoroutine(ShowCleanAndFinish());
+            _phase = Phase.Done;
+            _done  = true;
+            StartCoroutine(Finish());
         }
     }
 
-    IEnumerator ShowCleanAndFinish()
+    IEnumerator Finish()
     {
         SetBrush(false);
         ShowOnly(cleanTeethRenderer);
@@ -145,23 +129,22 @@ public class Level2Manager : MonoBehaviour
         QuizManager.LoadQuizForLevel(levelID, quizSceneName);
     }
 
-    // ── Helpers ───────────────────────────────────────────────────────────
     void SetBrush(bool active)
     {
         if (toothbrush != null) toothbrush.SetActive(active);
     }
 
-    void ShowOnly(SpriteRenderer sr)
+    void ShowOnly(SpriteRenderer target)
     {
-        SetInactive(dirtyTeethRenderer);
-        SetInactive(cleanTeethRenderer);
-        SetInactive(gargleRenderer);
-        SetInactive(dirtyTongueRenderer);
-        if (sr != null) sr.gameObject.SetActive(true);
+        SetActive(dirtyTeethRenderer, false);
+        SetActive(cleanTeethRenderer, false);
+        SetActive(gargleRenderer,     false);
+        SetActive(dirtyTongueRenderer,false);
+        if (target != null) target.gameObject.SetActive(true);
     }
 
-    void SetInactive(SpriteRenderer sr)
+    void SetActive(SpriteRenderer sr, bool active)
     {
-        if (sr != null) sr.gameObject.SetActive(false);
+        if (sr != null) sr.gameObject.SetActive(active);
     }
 }

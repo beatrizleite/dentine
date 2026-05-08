@@ -29,7 +29,6 @@ public class Level3Tutorial : MonoBehaviour
     {
         running = true;
 
-        // ── Build all visuals and capture local refs ──────────────────────
         var root = new GameObject("TutorialRoot").transform;
         root.SetParent(transform, false);
 
@@ -71,16 +70,13 @@ public class Level3Tutorial : MonoBehaviour
         dotSR.sprite = MakeCircle(64); dotSR.sortingOrder = 61;
         dotSR.color  = new Color(1,1,1,0); dotGO.transform.localScale = Vector3.one * 0.34f;
 
-        // ── Hide real cards ───────────────────────────────────────────────
         var realCards = FindObjectsByType<Card>(FindObjectsInactive.Include, FindObjectsSortMode.None);
         foreach (var c in realCards) c.gameObject.SetActive(false);
 
-        // ── Fade in dim ───────────────────────────────────────────────────
         yield return StartCoroutine(FadeSR(dimSR, 0f, 0.72f, 0.30f));
 
         yield return new WaitForSeconds(0.4f);
 
-        // ── 1. CORRECT (green) ────────────────────────────────────────────
         yield return StartCoroutine(DoTap(fingerGO.transform, dotSR, trailSR, cardA));
         yield return new WaitForSeconds(postFlipPause);
         yield return StartCoroutine(DoTap(fingerGO.transform, dotSR, trailSR, cardB));
@@ -92,7 +88,6 @@ public class Level3Tutorial : MonoBehaviour
         SetDotAlpha(dotSR, trailSR, 0f);
         yield return new WaitForSeconds(resetPause);
 
-        // ── 2. WRONG (red) ────────────────────────────────────────────────
         SetCardColour(cardB, new Color(0.85f, 0.38f, 0.31f, 1f));  // different tool
         yield return StartCoroutine(DoTap(fingerGO.transform, dotSR, trailSR, cardA));
         yield return new WaitForSeconds(postFlipPause);
@@ -108,7 +103,6 @@ public class Level3Tutorial : MonoBehaviour
         SetDotAlpha(dotSR, trailSR, 0f);
         yield return new WaitForSeconds(0.2f);
 
-        // ── Fade out + restore ────────────────────────────────────────────
         SetDotAlpha(dotSR, trailSR, 0f);
         yield return StartCoroutine(FadeSR(dimSR, 0.72f, 0f, 0.30f));
 
@@ -121,7 +115,6 @@ public class Level3Tutorial : MonoBehaviour
         if (MatchManager.instance != null) MatchManager.instance.StartIntro();
     }
 
-    // ── Coroutines with ONLY local/parameter refs — no field lookups ──────
 
     IEnumerator DoTap(Transform finger, SpriteRenderer dot, SpriteRenderer trail, GameObject card)
     {
@@ -225,7 +218,6 @@ public class Level3Tutorial : MonoBehaviour
         if (front) front.color = col;
     }
 
-    // ── Card builder ──────────────────────────────────────────────────────
     GameObject BuildCard(Transform parent, Vector3 pos, bool faceUp)
     {
         var root = new GameObject("DemoCard").transform;
@@ -250,7 +242,6 @@ public class Level3Tutorial : MonoBehaviour
         return root.gameObject;
     }
 
-    // ── Sprite factories ──────────────────────────────────────────────────
     static Sprite MakeSolid(int w,int h,Color col){var tex=new Texture2D(w,h,TextureFormat.RGBA32,false);var px=new Color[w*h];for(int i=0;i<px.Length;i++)px[i]=col;tex.SetPixels(px);tex.Apply();return Sprite.Create(tex,new Rect(0,0,w,h),Vector2.one*.5f,(float)w);}
     static void DrawCircle(SpriteRenderer sr){var tex=new Texture2D(256,256,TextureFormat.RGBA32,false);var bg=new Color(0.22f,0.72f,0.54f,1f);var fg=new Color(1f,1f,1f,0.85f);for(int y=0;y<256;y++)for(int x=0;x<256;x++){float nx=(x-128f)/80f,ny=(y-128f)/80f,d=nx*nx+ny*ny;tex.SetPixel(x,y,d<1f&&d>0.45f?fg:bg);}tex.Apply();sr.sprite=Sprite.Create(tex,new Rect(0,0,256,256),Vector2.one*.5f,256f);}
     static Sprite MakeCardBack(int size){var tex=new Texture2D(size,size,TextureFormat.RGBA32,false);var bg=new Color(0.10f,0.36f,0.52f);var brd=new Color(0.06f,0.22f,0.33f);var inn=new Color(0.13f,0.44f,0.62f);for(int y=0;y<size;y++)for(int x=0;x<size;x++){int b=14,h2=8;Color c=(x<b||x>=size-b||y<b||y>=size-b)?brd:(x<b+h2||x>=size-b-h2||y<b+h2||y>=size-b-h2)?inn:bg;if(x%18<2&&y%18<2)c=Color.Lerp(c,new Color(1,1,1,0.15f),0.5f);tex.SetPixel(x,y,c);}tex.Apply();return Sprite.Create(tex,new Rect(0,0,size,size),Vector2.one*.5f,(float)size);}

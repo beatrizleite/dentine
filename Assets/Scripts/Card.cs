@@ -4,39 +4,33 @@ using System.Collections;
 
 public class Card : MonoBehaviour, IPointerClickHandler
 {
-    // ── data ──────────────────────────────────────────────────────────────
-    public int  ToolId   { get; private set; }
-    public bool IsUp     => state == State.FaceUp   || state == State.Matched;
+    public int ToolId { get; private set; }
+    public bool IsUp => state == State.FaceUp || state == State.Matched;
     public bool IsLocked => state == State.Flipping || state == State.Matched;
 
-    // ── visuals ───────────────────────────────────────────────────────────
     [HideInInspector] public SpriteRenderer backSR;
     [HideInInspector] public SpriteRenderer frontSR;
     [HideInInspector] public SpriteRenderer shadowSR;
     [HideInInspector] public SpriteRenderer glowSR;
 
-    // ── config ────────────────────────────────────────────────────────────
-    public float flipDuration   = 0.35f;
-    public float shadowOffsetX  = 0.07f;
-    public float shadowOffsetY  = -0.07f;
+    public float flipDuration = 0.35f;
+    public float shadowOffsetX = 0.07f;
+    public float shadowOffsetY = -0.07f;
 
-    // ── state ─────────────────────────────────────────────────────────────
     enum State { FaceDown, Flipping, FaceUp, Matched }
     State state = State.FaceDown;
 
-    // ── public setup ──────────────────────────────────────────────────────
     public void Initialise(int toolId, Sprite front)
     {
         ToolId = toolId;
-        frontSR.sprite  = front;
+        frontSR.sprite = front;
         frontSR.enabled = false;
-        backSR.enabled  = true;
-        glowSR.enabled  = false;
+        backSR.enabled = true;
+        glowSR.enabled = false;
         state = State.FaceDown;
         transform.localScale = Vector3.one;
     }
 
-    // ── flip ──────────────────────────────────────────────────────────────
     public void FlipUp(System.Action done = null)
     {
         if (state != State.FaceDown) { done?.Invoke(); return; }
@@ -60,7 +54,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         if (glowSR == null) yield break;
 
         // Set green colour
-        glowSR.color   = new Color(0.18f, 0.85f, 0.28f, 0f);
+        glowSR.color = new Color(0.18f, 0.85f, 0.28f, 0f);
         glowSR.enabled = true;
 
         // Bounce scale + fade in
@@ -68,10 +62,10 @@ public class Card : MonoBehaviour, IPointerClickHandler
         while (t < 1f)
         {
             t += Time.deltaTime / 0.20f;
-            float e  = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t));
-            float s  = 1f + Mathf.Sin(Mathf.Clamp01(t) * Mathf.PI) * 0.08f;
-            transform.localScale         = new Vector3(s, s, 1f);
-            var c = glowSR.color; c.a    = e * 0.65f; glowSR.color = c;
+            float e = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t));
+            float s = 1f + Mathf.Sin(Mathf.Clamp01(t) * Mathf.PI) * 0.08f;
+            transform.localScale = new Vector3(s, s, 1f);
+            var c = glowSR.color; c.a = e * 0.65f; glowSR.color = c;
             yield return null;
         }
         transform.localScale = Vector3.one;
@@ -87,17 +81,15 @@ public class Card : MonoBehaviour, IPointerClickHandler
             yield return null;
         }
         glowSR.enabled = false;
-        glowSR.color   = new Color(1f, 1f, 1f, 0f);   // reset to transparent white
+        glowSR.color = new Color(1f, 1f, 1f, 0f);   // reset to transparent white
     }
 
-    // ── input ─────────────────────────────────────────────────────────────
     public void OnPointerClick(PointerEventData _)
     {
         if (IsLocked) return;
         MatchManager.instance?.OnCardClicked(this);
     }
 
-    // ── coroutines ────────────────────────────────────────────────────────
     IEnumerator DoFlip(bool toFront, System.Action done)
     {
         state = State.Flipping;
@@ -119,8 +111,8 @@ public class Card : MonoBehaviour, IPointerClickHandler
         }
 
         // Swap faces
-        backSR.enabled  = !toFront;
-        frontSR.enabled =  toFront;
+        backSR.enabled = !toFront;
+        frontSR.enabled = toFront;
 
         // Second half: expand X (ease-out cubic)
         t = 0f;
@@ -147,12 +139,12 @@ public class Card : MonoBehaviour, IPointerClickHandler
     /// Initialise showing the front face immediately (no animation).
     public void InitialiseFaceUp(int toolId, Sprite front)
     {
-        ToolId          = toolId;
-        frontSR.sprite  = front;
+        ToolId = toolId;
+        frontSR.sprite = front;
         frontSR.enabled = true;
-        backSR.enabled  = false;
-        glowSR.enabled  = false;
-        state           = State.FaceUp;
+        backSR.enabled = false;
+        glowSR.enabled = false;
+        state = State.FaceUp;
         transform.localScale = Vector3.one;
     }
 
@@ -160,7 +152,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
     public void SetFaceDownImmediate()
     {
         frontSR.enabled = false;
-        backSR.enabled  = true;
+        backSR.enabled = true;
         state = State.FaceDown;
         transform.localScale = Vector3.one;
     }
@@ -176,7 +168,7 @@ public class Card : MonoBehaviour, IPointerClickHandler
         while (t < 1f)
         {
             t += Time.deltaTime / Mathf.Max(duration, 0.01f);
-            float e  = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t));
+            float e = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t));
             float up = Mathf.Sin(Mathf.Clamp01(t) * Mathf.PI) * arcHeight;
             transform.position = Vector3.Lerp(start, target, e) + Vector3.up * up;
             yield return null;

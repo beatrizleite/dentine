@@ -14,14 +14,12 @@ public class TongueScrubZone : MonoBehaviour
 
     public Sprite foamSprite;
 
-    // ── statics ───────────────────────────────────────────────────────────
     static int s_total   = 0;
     static int s_cleaned = 0;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     static void ResetStatics() { s_total = 0; s_cleaned = 0; }
 
-    // ── per-zone ──────────────────────────────────────────────────────────
     Collider2D     col;
     SpriteRenderer foamSR;
     float          distanceScrubbed = 0f;
