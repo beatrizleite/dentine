@@ -2381,7 +2381,7 @@ MonoBehaviour:
   - levelName: Level1
     questions:
     - questionText: "Que alimentos saud\xE1veis escolherias para o Banquete Brilhante?"
-      questionAudio: {fileID: 0}
+      questionAudio: {fileID: 8300000, guid: 3052a29a4e7de4c51ae339c9d913b21f, type: 3}
       option1:
         type: 1
         text: 
@@ -2392,7 +2392,7 @@ MonoBehaviour:
         image: {fileID: 21300000, guid: dd9e790704dda4a878b763f5d9aabd11, type: 3}
       correctAnswerIndex: 1
     - questionText: Qual o alimento que os teus dentes preferem?
-      questionAudio: {fileID: 0}
+      questionAudio: {fileID: 8300000, guid: 79cbacb52d710419d97ceaa385958454, type: 3}
       option1:
         type: 1
         text: 
@@ -2403,7 +2403,7 @@ MonoBehaviour:
         image: {fileID: 21300000, guid: 6d553d049882d41f9b1f4e359dd34128, type: 3}
       correctAnswerIndex: 1
     - questionText: "O que pode causar c\xE1rie dent\xE1ria?"
-      questionAudio: {fileID: 0}
+      questionAudio: {fileID: 8300000, guid: 940cb0ba88d1e46f989a6b691a752446, type: 3}
       option1:
         type: 1
         text: 
@@ -2414,7 +2414,7 @@ MonoBehaviour:
         image: {fileID: 21300000, guid: a16666eacfadd4c9d878e61088a6c815, type: 3}
       correctAnswerIndex: 0
     - questionText: Qual a bebida melhor para os teus dentes?
-      questionAudio: {fileID: 0}
+      questionAudio: {fileID: 8300000, guid: 33cbb440b27d647ec86762442ab3bedc, type: 3}
       option1:
         type: 1
         text: 
@@ -2425,7 +2425,7 @@ MonoBehaviour:
         image: {fileID: 21300000, guid: 1015f6d4cc75e4386a79afff3878f5b8, type: 3}
       correctAnswerIndex: 0
     - questionText: "O que acontece quando comes alimentos saud\xE1veis?"
-      questionAudio: {fileID: 0}
+      questionAudio: {fileID: 8300000, guid: cc5e9add7a7e84b32a6cbeccb72a743e, type: 3}
       option1:
         type: 1
         text: 
@@ -2440,7 +2440,7 @@ MonoBehaviour:
   - levelName: Level2
     questions:
     - questionText: Quantas vezes devemos escovar os dentes por dia?
-      questionAudio: {fileID: 0}
+      questionAudio: {fileID: 8300000, guid: d3cd05a2494b54952be03b82f16bc17e, type: 3}
       option1:
         type: 0
         text: 1
@@ -2451,7 +2451,7 @@ MonoBehaviour:
         image: {fileID: 0}
       correctAnswerIndex: 1
     - questionText: Quanto tempo devemos escovar os dentes?
-      questionAudio: {fileID: 0}
+      questionAudio: {fileID: 8300000, guid: 7554f75038fea433aa5e8149b266bb03, type: 3}
       option1:
         type: 0
         text: 30 segundos
@@ -2462,7 +2462,7 @@ MonoBehaviour:
         image: {fileID: 0}
       correctAnswerIndex: 1
     - questionText: O que devemos usar para escovar os dentes?
-      questionAudio: {fileID: 0}
+      questionAudio: {fileID: 8300000, guid: 1c30479f8eda44ad9a6b1649a322a17a, type: 3}
       option1:
         type: 1
         text: 
@@ -2473,7 +2473,7 @@ MonoBehaviour:
         image: {fileID: 21300000, guid: 08e3bf1b9445f49e4ae940898ec0e6a5, type: 3}
       correctAnswerIndex: 0
     - questionText: "Devemos escovar a l\xEDngua tamb\xE9m?"
-      questionAudio: {fileID: 0}
+      questionAudio: {fileID: 8300000, guid: 0b2ff0df6e3a142bc9302c670a10658a, type: 3}
       option1:
         type: 1
         text: 
@@ -2484,7 +2484,7 @@ MonoBehaviour:
         image: {fileID: 21300000, guid: f057a43c879844c2c8c1172d0952a4fb, type: 3}
       correctAnswerIndex: 0
     - questionText: "O que fazemos ap\xF3s escovar os dentes \xE0 noite?"
-      questionAudio: {fileID: 0}
+      questionAudio: {fileID: 8300000, guid: 346f3147ad8b543df9a2984eb3ceaac2, type: 3}
       option1:
         type: 1
         text: 
@@ -2499,7 +2499,7 @@ MonoBehaviour:
   - levelName: Level3
     questions:
     - questionText: "O m\xE9dico dentista \xE9 amiguinho do \"Escovinha\" ou da \"Cari\xF3lica\"?"
-      questionAudio: {fileID: 0}
+      questionAudio: {fileID: 8300000, guid: 1ffefcd60e7ac4dbe9eb8cc9633c6a33, type: 3}
       option1:
         type: 1
         text: "Escovinha \U0001FAA5"
@@ -2509,8 +2509,8 @@ MonoBehaviour:
         text: "Cari\xF3lica \U0001F9A0"
         image: {fileID: 21300000, guid: 8d07d1ec21d6541208e840b74b4b151a, type: 3}
       correctAnswerIndex: 0
-    - questionText: "O qu\xEA acontece na consulta de medicina dent\xE1ria?"
-      questionAudio: {fileID: 0}
+    - questionText: "O que acontece na consulta de medicina dent\xE1ria?"
+      questionAudio: {fileID: 8300000, guid: 15e1cff0fd6874f4b9d8efa24ee2139c, type: 3}
       option1:
         type: 1
         text: "Cuidar dos dentes \U0001F9B7"
@@ -2521,7 +2521,7 @@ MonoBehaviour:
         image: {fileID: 21300000, guid: 6ca4b6e7af52c4fbe877dd51058263e1, type: 3}
       correctAnswerIndex: 0
     - questionText: "O m\xE9dico dentista faz d\xF3i-d\xF3i?"
-      questionAudio: {fileID: 0}
+      questionAudio: {fileID: 8300000, guid: ec7939d6a52664838aadf8ee8be8f2e0, type: 3}
       option1:
         type: 1
         text: "N\xE3o, ele ajuda! \U0001F60A"
@@ -2532,7 +2532,7 @@ MonoBehaviour:
         image: {fileID: 21300000, guid: e5cd2dcef41fb432e949173373f9387f, type: 3}
       correctAnswerIndex: 0
     - questionText: Como estamos depois da consulta?
-      questionAudio: {fileID: 0}
+      questionAudio: {fileID: 8300000, guid: a34d7753e671346a999ed5e5867891a5, type: 3}
       option1:
         type: 1
         text: "Felizes \U0001F601"
@@ -2543,7 +2543,7 @@ MonoBehaviour:
         image: {fileID: 21300000, guid: 1c21b830adf104b2c992a273e3774178, type: 3}
       correctAnswerIndex: 0
     - questionText: "Como ficam os dentes depois da visita ao m\xE9dico dentista?"
-      questionAudio: {fileID: 0}
+      questionAudio: {fileID: 8300000, guid: 04b2fd2c98f6946a1a8fa5ad40273e75, type: 3}
       option1:
         type: 1
         text: "Felizes e fortes \U0001F4AA"
