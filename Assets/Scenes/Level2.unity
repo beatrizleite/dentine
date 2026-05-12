@@ -5083,7 +5083,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelTitleCard
   levelLabel: "N\xEDvel 2"
   levelTitle: "A Escovagem M\xE1gica"
-  narrationClip: {fileID: 0}
+  narrationClip: {fileID: 8300000, guid: 67707c33834b54150848afeaf2fb4b12, type: 3}
   holdDuration: 2
   fadeDuration: 0.8
   labelText: {fileID: 1618504085}

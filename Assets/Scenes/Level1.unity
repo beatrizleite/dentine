@@ -1810,7 +1810,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelTitleCard
   levelLabel: "N\xEDvel 1"
   levelTitle: As Escolhas do Banquete do Reino
-  narrationClip: {fileID: 0}
+  narrationClip: {fileID: 8300000, guid: 6363e8408efee4a9aa80e6455e54ce70, type: 3}
   holdDuration: 2
   fadeDuration: 0.8
   labelText: {fileID: 337366519}

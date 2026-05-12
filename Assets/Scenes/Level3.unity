@@ -1945,7 +1945,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::LevelTitleCard
   levelLabel: "N\xEDvel 3"
   levelTitle: A Visita ao Castelo do Doutor Enrisos
-  narrationClip: {fileID: 0}
+  narrationClip: {fileID: 8300000, guid: 7ad7c88d2f3264a8dbb349037077f770, type: 3}
   holdDuration: 2
   fadeDuration: 0.8
   labelText: {fileID: 807817304}
