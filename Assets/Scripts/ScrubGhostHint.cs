@@ -3,41 +3,40 @@ using System.Collections;
 
 public class ScrubGhostHint : MonoBehaviour
 {
-    public Vector3[] waypoints;
+    public float sweepSpeed  = 3.5f;
+    public float pauseAtTurn = 0.35f;
+    public float fingerRadius = 0.55f;
 
-    public float sweepSpeed  = 4.5f;
-    public float pauseAtTurn = 0.25f;
-    public float fingerRadius = 0.28f;
-
-    [Range(0f,1f)] public float maxAlpha  = 0.75f;
-    public float fadeInTime  = 0.25f;
+    [Range(0f, 1f)] public float maxAlpha = 0.92f;
+    public float fadeInTime  = 0.20f;
     public float fadeOutTime = 0.35f;
 
-    SpriteRenderer dotSR, trailSR;
+    // Fires once the hint has completed one full back-and-forth sweep.
+    public event System.Action OnOneSweepDone;
+
+    SpriteRenderer dotSR, glowSR;
     Coroutine animCo, fadeCo;
     bool running;
 
     void Awake()
     {
-        var trailGO = new GameObject("Trail");
-        trailGO.transform.SetParent(transform, false);
-        trailSR = trailGO.AddComponent<SpriteRenderer>();
-        trailSR.sprite = MakeCircleSprite(64);
-        trailSR.sortingLayerName = "Default";
-        trailSR.sortingOrder = 19;
-        trailSR.color = new Color(1,1,1,0);
-        float ts = fingerRadius * 2.6f;
-        trailGO.transform.localScale = new Vector3(ts, ts, 1f);
+        var glowGO = new GameObject("Glow");
+        glowGO.transform.SetParent(transform, false);
+        glowGO.transform.localScale = Vector3.one * (fingerRadius * 3.2f);
+        glowSR = glowGO.AddComponent<SpriteRenderer>();
+        glowSR.sprite = MakeCircleSprite(64);
+        glowSR.sortingLayerName = "Default";
+        glowSR.sortingOrder = 18;
+        glowSR.color = new Color(0.4f, 0.8f, 1f, 0f);
 
         var dotGO = new GameObject("Dot");
         dotGO.transform.SetParent(transform, false);
+        dotGO.transform.localScale = Vector3.one * (fingerRadius * 2f);
         dotSR = dotGO.AddComponent<SpriteRenderer>();
         dotSR.sprite = MakeCircleSprite(64);
         dotSR.sortingLayerName = "Default";
         dotSR.sortingOrder = 20;
-        dotSR.color = new Color(1,1,1,0);
-        float ds = fingerRadius * 2f;
-        dotGO.transform.localScale = new Vector3(ds, ds, 1f);
+        dotSR.color = new Color(1f, 1f, 1f, 0f);
 
         gameObject.SetActive(false);
     }
@@ -45,13 +44,12 @@ public class ScrubGhostHint : MonoBehaviour
     public void Show(Vector3[] path)
     {
         if (path == null || path.Length < 2) return;
-        waypoints = path;
         gameObject.SetActive(true);
-        transform.position = waypoints[0];
+        transform.position = path[0];
         running = true;
 
         if (animCo != null) StopCoroutine(animCo);
-        animCo = StartCoroutine(AnimLoop());
+        animCo = StartCoroutine(AnimLoop(path));
 
         SetAlpha(0f);
         if (fadeCo != null) StopCoroutine(fadeCo);
@@ -66,16 +64,29 @@ public class ScrubGhostHint : MonoBehaviour
         fadeCo = StartCoroutine(FadeOutAndDisable());
     }
 
-    IEnumerator AnimLoop()
+    IEnumerator AnimLoop(Vector3[] waypoints)
     {
-        int idx = 0, dir = 1;
+        int idx = 0;
+        int dir = 1;
+        bool firedOnce = false;
+        int turnsHit = 0;
+
         while (running)
         {
             int next = idx + dir;
+
             if (next < 0 || next >= waypoints.Length)
             {
                 yield return new WaitForSeconds(pauseAtTurn);
-                dir = -dir;
+                turnsHit++;
+
+                if (!firedOnce && turnsHit >= 2)
+                {
+                    firedOnce = true;
+                    OnOneSweepDone?.Invoke();
+                }
+
+                dir  = -dir;
                 next = idx + dir;
                 if (next < 0 || next >= waypoints.Length) yield break;
             }
@@ -83,16 +94,15 @@ public class ScrubGhostHint : MonoBehaviour
             float dist = Vector3.Distance(transform.position, waypoints[next]);
             float dur  = Mathf.Max(dist / sweepSpeed, 0.05f);
             Vector3 from = transform.position;
-            float t = 0f;
-            while (t < 1f)
+
+            for (float t = 0f; t < 1f;)
             {
                 t += Time.deltaTime / dur;
-                float e = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t));
-                transform.position = Vector3.Lerp(from, waypoints[next], e);
-                trailSR.transform.position = Vector3.Lerp(
-                    trailSR.transform.position, transform.position, Time.deltaTime * 12f);
+                transform.position = Vector3.Lerp(from, waypoints[next], Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t)));
+                glowSR.transform.position = Vector3.Lerp(glowSR.transform.position, transform.position, Time.deltaTime * 10f);
                 yield return null;
             }
+
             transform.position = waypoints[next];
             idx = next;
         }
@@ -100,33 +110,43 @@ public class ScrubGhostHint : MonoBehaviour
 
     IEnumerator FadeTo(float target, float duration)
     {
-        float start = GetAlpha(), t = 0f;
-        while (t < 1f) { t += Time.deltaTime / Mathf.Max(duration, 0.01f); SetAlpha(Mathf.Lerp(start, target, Mathf.Clamp01(t))); yield return null; }
+        float start = GetAlpha();
+        for (float t = 0f; t < 1f;)
+        {
+            t += Time.deltaTime / Mathf.Max(duration, 0.01f);
+            SetAlpha(Mathf.Lerp(start, target, Mathf.Clamp01(t)));
+            yield return null;
+        }
         SetAlpha(target);
     }
 
     IEnumerator FadeOutAndDisable()
-    { yield return FadeTo(0f, fadeOutTime); gameObject.SetActive(false); }
+    {
+        yield return FadeTo(0f, fadeOutTime);
+        gameObject.SetActive(false);
+    }
 
     void SetAlpha(float a)
     {
-        if (dotSR   != null) { var c = dotSR.color;   c.a = a * 0.90f; dotSR.color   = c; }
-        if (trailSR != null) { var c = trailSR.color; c.a = a * 0.30f; trailSR.color = c; }
+        if (dotSR  != null) { var c = dotSR.color;  c.a = a;        dotSR.color  = c; }
+        if (glowSR != null) { var c = glowSR.color; c.a = a * 0.45f; glowSR.color = c; }
     }
-    float GetAlpha() => dotSR != null ? dotSR.color.a / 0.9f : 0f;
+
+    float GetAlpha() => dotSR != null ? dotSR.color.a : 0f;
 
     static Sprite MakeCircleSprite(int size)
     {
         var tex = new Texture2D(size, size, TextureFormat.RGBA32, false);
-        float cx = size * 0.5f, cy = size * 0.5f, r = size * 0.5f;
+        float cx = size * 0.5f;
+        float r  = size * 0.5f;
         for (int y = 0; y < size; y++)
             for (int x = 0; x < size; x++)
             {
-                float d = Mathf.Sqrt((x-cx)*(x-cx)+(y-cy)*(y-cy));
-                float a = Mathf.Clamp01(1f - d/r); a *= a;
-                tex.SetPixel(x, y, new Color(1,1,1,a));
+                float d = Mathf.Sqrt((x - cx) * (x - cx) + (y - cx) * (y - cx));
+                float a = Mathf.Clamp01(1f - d / r);
+                tex.SetPixel(x, y, new Color(1, 1, 1, a * a));
             }
         tex.Apply();
-        return Sprite.Create(tex, new Rect(0,0,size,size), new Vector2(0.5f,0.5f), size);
+        return Sprite.Create(tex, new Rect(0, 0, size, size), new Vector2(0.5f, 0.5f), size);
     }
 }

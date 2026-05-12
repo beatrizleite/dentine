@@ -2464,35 +2464,35 @@ MonoBehaviour:
     - questionText: O que devemos usar para escovar os dentes?
       questionAudio: {fileID: 0}
       option1:
-        type: 0
-        text: Escova e pasta
-        image: {fileID: 0}
+        type: 1
+        text: 
+        image: {fileID: -3558373685406419912, guid: 8ba0847c3e794433cb572ece9cf76e85, type: 3}
       option2:
-        type: 0
-        text: Toalha
-        image: {fileID: 0}
+        type: 1
+        text: 
+        image: {fileID: 21300000, guid: 08e3bf1b9445f49e4ae940898ec0e6a5, type: 3}
       correctAnswerIndex: 0
     - questionText: "Devemos escovar a l\xEDngua tamb\xE9m?"
       questionAudio: {fileID: 0}
       option1:
-        type: 0
-        text: Sim
-        image: {fileID: 0}
+        type: 1
+        text: 
+        image: {fileID: 21300000, guid: 747897182374b444f88205de3a2f59ab, type: 3}
       option2:
-        type: 0
-        text: "N\xE3o"
-        image: {fileID: 0}
+        type: 1
+        text: 
+        image: {fileID: 21300000, guid: f057a43c879844c2c8c1172d0952a4fb, type: 3}
       correctAnswerIndex: 0
-    - questionText: "O que fazemos ap\xF3s escovar os dentes?"
+    - questionText: "O que fazemos ap\xF3s escovar os dentes \xE0 noite?"
       questionAudio: {fileID: 0}
       option1:
-        type: 0
-        text: "Ir para a cama \U0001F319"
-        image: {fileID: 0}
+        type: 1
+        text: 
+        image: {fileID: 21300000, guid: 7d1ad02980abf4b8abb5697d05eb504c, type: 3}
       option2:
-        type: 0
-        text: "Comer doces \U0001F36C"
-        image: {fileID: 0}
+        type: 1
+        text: 
+        image: {fileID: 21300000, guid: aeff370cc150e42b7a1be4f9e9048907, type: 3}
       correctAnswerIndex: 0
     returnScene: DentineMenu
     nextScene: Level3
@@ -2501,60 +2501,60 @@ MonoBehaviour:
     - questionText: "O m\xE9dico dentista \xE9 amiguinho do \"Escovinha\" ou da \"Cari\xF3lica\"?"
       questionAudio: {fileID: 0}
       option1:
-        type: 0
+        type: 1
         text: "Escovinha \U0001FAA5"
-        image: {fileID: 0}
+        image: {fileID: 21300000, guid: abc6ed620f36946b9a42614ca1d173c0, type: 3}
       option2:
-        type: 0
+        type: 1
         text: "Cari\xF3lica \U0001F9A0"
-        image: {fileID: 0}
+        image: {fileID: 21300000, guid: 8d07d1ec21d6541208e840b74b4b151a, type: 3}
       correctAnswerIndex: 0
     - questionText: "O qu\xEA acontece na consulta de medicina dent\xE1ria?"
       questionAudio: {fileID: 0}
       option1:
-        type: 0
+        type: 1
         text: "Cuidar dos dentes \U0001F9B7"
-        image: {fileID: 0}
+        image: {fileID: 21300000, guid: 9f6c05b0ec39441b9a24fbf530788e8c, type: 3}
       option2:
-        type: 0
+        type: 1
         text: "Vender doces \U0001F36D"
-        image: {fileID: 0}
+        image: {fileID: 21300000, guid: 6ca4b6e7af52c4fbe877dd51058263e1, type: 3}
       correctAnswerIndex: 0
     - questionText: "O m\xE9dico dentista faz d\xF3i-d\xF3i?"
       questionAudio: {fileID: 0}
       option1:
-        type: 0
+        type: 1
         text: "N\xE3o, ele ajuda! \U0001F60A"
-        image: {fileID: 0}
+        image: {fileID: 21300000, guid: 4f1ed8db9b02a4fc9a41f7e86aa7d6da, type: 3}
       option2:
-        type: 0
+        type: 1
         text: "Sim \U0001F622"
-        image: {fileID: 0}
+        image: {fileID: 21300000, guid: e5cd2dcef41fb432e949173373f9387f, type: 3}
       correctAnswerIndex: 0
     - questionText: Como estamos depois da consulta?
       questionAudio: {fileID: 0}
       option1:
-        type: 0
+        type: 1
         text: "Felizes \U0001F601"
-        image: {fileID: 0}
+        image: {fileID: 21300000, guid: 1e5977907bb324f48b92360975a413c3, type: 3}
       option2:
-        type: 0
+        type: 1
         text: "Tristes \U0001F622"
-        image: {fileID: 0}
+        image: {fileID: 21300000, guid: 1c21b830adf104b2c992a273e3774178, type: 3}
       correctAnswerIndex: 0
     - questionText: "Como ficam os dentes depois da visita ao m\xE9dico dentista?"
       questionAudio: {fileID: 0}
       option1:
-        type: 0
+        type: 1
         text: "Felizes e fortes \U0001F4AA"
-        image: {fileID: 0}
+        image: {fileID: 21300000, guid: 7b8b1fb832be4412398f11614414b6ca, type: 3}
       option2:
-        type: 0
+        type: 1
         text: "Tristes e fracos \U0001F61E"
-        image: {fileID: 0}
+        image: {fileID: 21300000, guid: 6b0b798f5c64e4570ae6f8ca0cf7db30, type: 3}
       correctAnswerIndex: 0
     returnScene: DentineMenu
-    nextScene: DentineMenu
+    nextScene: Diploma
   starImages5:
   - {fileID: 82124425}
   - {fileID: 612214517}

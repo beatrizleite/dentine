@@ -1,21 +1,16 @@
-/// Draggable toothbrush that follows the pointer/touch each frame.
-/// The bristle tip (BrushHeadWorld) tracks the finger exactly — the handle trails behind.
-/// Mirrors vertically when cleaning lower teeth or the tongue.
 using UnityEngine;
 
 public class ToothbrushController : MonoBehaviour
 {
     public static ToothbrushController instance;
 
-    [Header("Brush Head (local space)")]
-    [Tooltip("Offset from pivot to bristle tip in local sprite units.")]
+    // Offset from pivot to bristle tip in local sprite units.
+    // Negative X = bristles are on the left side of the sprite.
     public Vector2 headOffsetLocal = new Vector2(-8.5f, 0f);
 
-    [Header("Feel")]
     [Range(0f, 0.9f)] public float lag = 0.08f;
 
-    [Header("Flip Threshold")]
-    [Tooltip("World Y below which the brush flips for lower teeth / tongue.")]
+    // World Y below which the brush flips for lower teeth / tongue.
     public float flipYThreshold = -0.60f;
 
     Camera _cam;
@@ -49,7 +44,7 @@ public class ToothbrushController : MonoBehaviour
                 new Vector3(screen.x, screen.y, Mathf.Abs(_cam.transform.position.z)));
             w.z = transform.position.z;
 
-            // Offset pivot so the bristle tip lands exactly on the finger
+            // Shift the pivot so the bristle tip lands exactly under the finger
             Vector3 worldOffset = transform.TransformPoint(
                 new Vector3(headOffsetLocal.x, headOffsetLocal.y, 0f)) - transform.position;
 
@@ -60,8 +55,6 @@ public class ToothbrushController : MonoBehaviour
         ApplyFlip();
     }
 
-    // Flip the sprite Y so bristles point downward for lower teeth and tongue.
-    // Only applied while pressing to avoid flipping when the brush is off-screen.
     void ApplyFlip()
     {
         if (!_pressing) return;

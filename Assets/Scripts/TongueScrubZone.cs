@@ -1,37 +1,29 @@
 using UnityEngine;
 
-/// Tongue scrub zone. Same distance-based mechanic as ToothScrubZone
-/// but with a shorter required distance (tongue is smaller).
+// Same mechanic as ToothScrubZone but for the tongue.
 [RequireComponent(typeof(Collider2D))]
 public class TongueScrubZone : MonoBehaviour
 {
-    [Header("Scrub Settings")]
-    [Tooltip("Total brush travel (world units) required to clean this zone.")]
-    public float requiredDistance = 3.5f;   // slightly easier than teeth
-
-    [Tooltip("Minimum brush speed (units/sec) to count as scrubbing.")]
-    public float minSpeed = 0.3f;
-
+    public float requiredDistance = 2.0f;
+    public float minSpeed = 0.25f;
     public Sprite foamSprite;
 
-    static int s_total   = 0;
-    static int s_cleaned = 0;
+    static int s_total, s_cleaned;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     static void ResetStatics() { s_total = 0; s_cleaned = 0; }
 
-    Collider2D     col;
+    Collider2D col;
     SpriteRenderer foamSR;
-    float          distanceScrubbed = 0f;
-    Vector3        lastBrushPos;
-    bool           wasInside = false;
-    bool           cleaned   = false;
+    float distanceScrubbed;
+    Vector3 lastBrushPos;
+    bool wasInside;
+    bool cleaned;
 
     void OnEnable()  { s_total++; }
     void OnDisable() { if (s_total > 0) s_total--; }
-
-    void Awake() { col = GetComponent<Collider2D>(); }
-    void Start() { BuildFoamChild(); }
+    void Awake()     { col = GetComponent<Collider2D>(); }
+    void Start()     { BuildFoamChild(); }
 
     void BuildFoamChild()
     {
@@ -41,8 +33,6 @@ public class TongueScrubZone : MonoBehaviour
 
         var go = new GameObject("Foam");
         go.transform.SetParent(transform, false);
-        go.transform.localPosition = Vector3.zero;
-
         foamSR = go.AddComponent<SpriteRenderer>();
         foamSR.sortingLayerName = "Default";
         foamSR.sortingOrder = 5;
@@ -56,9 +46,8 @@ public class TongueScrubZone : MonoBehaviour
         if (foamSR == null || foamSR.sprite == null) return;
         var box = col as BoxCollider2D;
         float targetH = box != null ? box.size.y : 0.4f;
-        float sprH    = foamSR.sprite.bounds.size.y;
-        if (sprH <= 0f) return;
-        foamSR.transform.localScale = Vector3.one * (targetH / sprH);
+        float sprH = foamSR.sprite.bounds.size.y;
+        if (sprH > 0f) foamSR.transform.localScale = Vector3.one * (targetH / sprH);
     }
 
     void Update()
@@ -68,29 +57,37 @@ public class TongueScrubZone : MonoBehaviour
         var brush = ToothbrushController.instance;
         if (brush == null || !brush.IsActive) { wasInside = false; return; }
 
-        Vector3 headPos = brush.BrushHeadWorld;
+        var headPos = brush.BrushHeadWorld;
         bool inside = BrushHeadInside(headPos);
 
         if (inside)
         {
+            if (Level2Manager.instance?.hintManager != null &&
+                Level2Manager.instance.hintManager.IsScrubLocked())
+            {
+                wasInside = inside;
+                lastBrushPos = headPos;
+                return;
+            }
+
             if (wasInside)
             {
                 float moved = Vector3.Distance(headPos, lastBrushPos);
-                float speed = moved / Time.deltaTime;
-                if (speed >= minSpeed)
+                if (moved / Time.deltaTime >= minSpeed)
                     distanceScrubbed += moved;
             }
 
             SetAlpha(Mathf.Clamp01(distanceScrubbed / requiredDistance));
-            if (Level2Manager.instance != null) Level2Manager.instance.OnScrubActivity();
+            Level2Manager.instance?.OnScrubActivity();
             if (distanceScrubbed >= requiredDistance) MarkCleaned();
         }
 
-        wasInside    = inside;
+        wasInside = inside;
         lastBrushPos = headPos;
     }
 
     const float brushRadius = 0.35f;
+
     bool BrushHeadInside(Vector3 p)
     {
         var box = col as BoxCollider2D;
@@ -109,12 +106,14 @@ public class TongueScrubZone : MonoBehaviour
         SetAlpha(1f);
         s_cleaned++;
         float prog = s_total > 0 ? (float)s_cleaned / s_total : 1f;
-        if (Level2Manager.instance != null) Level2Manager.instance.OnTongueProgress(prog);
+        Level2Manager.instance?.OnTongueProgress(prog);
     }
 
     void SetAlpha(float a)
     {
         if (foamSR == null) return;
-        Color c = foamSR.color; c.a = a; foamSR.color = c;
+        var c = foamSR.color;
+        c.a = a;
+        foamSR.color = c;
     }
 }
