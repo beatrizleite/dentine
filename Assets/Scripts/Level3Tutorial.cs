@@ -23,7 +23,14 @@ public class Level3Tutorial : MonoBehaviour
         StartCoroutine(RunOnce());
     }
 
-    void Start() { Show(); }
+    void Start()
+    {
+        var titleCard = Object.FindFirstObjectByType<LevelTitleCard>();
+        if (titleCard != null)
+            titleCard.OnDismissed += Show;
+        else
+            Show();
+    }
 
     IEnumerator RunOnce()
     {

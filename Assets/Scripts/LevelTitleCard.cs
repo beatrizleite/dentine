@@ -2,26 +2,28 @@ using System.Collections;
 using UnityEngine;
 using TMPro;
 
-// Full-screen title card shown at level start. Fires OnDismissed when fully gone.
 public class LevelTitleCard : MonoBehaviour
 {
-    [Header("Titles")]
     public string levelLabel;
     public string levelTitle;
 
-    [Header("Narration")]
     public AudioClip narrationClip;
 
-    [Header("Timing")]
     public float holdDuration = 2.5f;
     public float fadeDuration = 0.8f;
 
-    [Header("References")]
     public TextMeshProUGUI labelText;
     public TextMeshProUGUI titleText;
-    public CanvasGroup     canvasGroup;
+    public CanvasGroup canvasGroup;
 
     public event System.Action OnDismissed;
+
+    void Awake()
+    {
+        // Make sure the card is fully visible immediately, even before Start runs.
+        // This prevents a flash of transparent on the first frame on Android.
+        if (canvasGroup != null) canvasGroup.alpha = 1f;
+    }
 
     void Start()
     {
@@ -30,28 +32,34 @@ public class LevelTitleCard : MonoBehaviour
 
         if (narrationClip != null)
         {
-            var src        = gameObject.AddComponent<AudioSource>();
-            src.clip       = narrationClip;
+            var src = gameObject.AddComponent<AudioSource>();
+            src.clip = narrationClip;
             src.playOnAwake = false;
+            BackgroundMusic.Duck();
             src.Play();
             holdDuration = Mathf.Max(holdDuration, narrationClip.length + 0.3f);
         }
 
+        // Wait one frame before starting so the canvas has rendered at least once.
         StartCoroutine(Show());
     }
 
     IEnumerator Show()
     {
-        canvasGroup.alpha = 1f;
+        yield return null; // one frame — ensures canvas is visible before countdown starts
+
+        if (canvasGroup != null) canvasGroup.alpha = 1f;
+
         yield return new WaitForSeconds(holdDuration);
 
         for (float t = 0f; t < fadeDuration;)
         {
             t += Time.deltaTime;
-            canvasGroup.alpha = 1f - t / fadeDuration;
+            if (canvasGroup != null) canvasGroup.alpha = 1f - t / fadeDuration;
             yield return null;
         }
 
+        BackgroundMusic.Unduck();
         gameObject.SetActive(false);
         OnDismissed?.Invoke();
     }

@@ -15,6 +15,7 @@ public class MatchManager : MonoBehaviour
         public Sprite toolSprite;
         [TextArea(3, 8)]
         public string infoText = "Info placeholder — add your text here.";
+        public AudioClip narrationClip;
     }
 
     [Header("Tools (6 needed for a 4x3 grid)")]
@@ -39,6 +40,7 @@ public class MatchManager : MonoBehaviour
     public TextMeshProUGUI infoPanelTitle;
     public TextMeshProUGUI infoPanelBody;
     public Button       infoPanelCloseBtn;
+    public Button       infoPanelAudioBtn;  // speaker button — wired at runtime if null
     public Image        dimOverlay;
 
     [Header("Tutorial")]
@@ -54,6 +56,7 @@ public class MatchManager : MonoBehaviour
     Card                firstFlipped;
     bool                locked;           // block input while evaluating
     int                 matchesFound;
+    AudioSource         _panelAudio;
     public void SetLocked(bool v) { locked = v; }
     public void ShowHintTutorial()
     {
@@ -95,6 +98,9 @@ public class MatchManager : MonoBehaviour
         if (infoPanelCloseBtn != null)
             infoPanelCloseBtn.onClick.AddListener(CloseInfoPanel);
 
+        _panelAudio = gameObject.AddComponent<AudioSource>();
+        _panelAudio.playOnAwake = false;
+
         // Wire the '?' hint button
         var hintBtn = GameObject.Find("HintButton")?.GetComponent<UnityEngine.UI.Button>();
         if (hintBtn != null) hintBtn.onClick.AddListener(ShowHintTutorial);
@@ -102,14 +108,26 @@ public class MatchManager : MonoBehaviour
         locked = true;
         BuildGrid();
 
+        // Hide all cards until the title card + tutorial are done
+        foreach (var card in allCards) card.gameObject.SetActive(false);
+
+        var titleCard = Object.FindFirstObjectByType<LevelTitleCard>();
+        if (titleCard != null)
+            titleCard.OnDismissed += OnTitleCardDone;
+        else
+            OnTitleCardDone();
+    }
+
+    void OnTitleCardDone()
+    {
         bool hasTutorial = FindFirstObjectByType<Level3Tutorial>() != null;
         if (hasTutorial)
         {
-            // Hide all cards while tutorial plays
-            foreach (var card in allCards) card.gameObject.SetActive(false);
+            // Cards stay hidden — Level3Tutorial will call StartIntro() when done
         }
         else
         {
+            foreach (var card in allCards) if (card != null) card.gameObject.SetActive(true);
             StartCoroutine(IntroSequence());
         }
     }
@@ -332,11 +350,75 @@ public class MatchManager : MonoBehaviour
         if (infoPanel  != null) infoPanel.SetActive(true);
         if (dimOverlay != null) dimOverlay.gameObject.SetActive(true);
 
+        // Play narration clip if available
+        if (_panelAudio != null && cfg.narrationClip != null)
+        {
+            _panelAudio.clip = cfg.narrationClip;
+            BackgroundMusic.Duck();
+            _panelAudio.Play();
+        }
+
+        // Wire audio button (created at runtime if not set in inspector)
+        EnsureAudioButton(cfg);
+
         StartCoroutine(AnimatePanel(true));
+    }
+
+    void EnsureAudioButton(ToolConfig cfg)
+    {
+        if (infoPanelAudioBtn == null && infoPanel != null)
+        {
+            // Build the button at runtime the first time
+            var font = infoPanelTitle?.font;
+
+            var btnGO = new UnityEngine.GameObject("AudioButton");
+            btnGO.transform.SetParent(infoPanel.transform, false);
+
+            var rt = btnGO.AddComponent<UnityEngine.RectTransform>();
+            rt.anchorMin        = new Vector2(1f, 1f);
+            rt.anchorMax        = new Vector2(1f, 1f);
+            rt.pivot            = new Vector2(1f, 1f);
+            rt.anchoredPosition = new Vector2(-12f, -12f);
+            rt.sizeDelta        = new Vector2(80f, 80f);
+
+            var img = btnGO.AddComponent<UnityEngine.UI.Image>();
+            img.color = new Color(0.15f, 0.52f, 0.22f, 1f);
+
+            infoPanelAudioBtn = btnGO.AddComponent<UnityEngine.UI.Button>();
+
+            var lblGO = new UnityEngine.GameObject("Label");
+            lblGO.transform.SetParent(btnGO.transform, false);
+            var lRT  = lblGO.AddComponent<UnityEngine.RectTransform>();
+            lRT.anchorMin = Vector2.zero; lRT.anchorMax = Vector2.one;
+            lRT.offsetMin = lRT.offsetMax = Vector2.zero;
+            var lbl = lblGO.AddComponent<TMPro.TextMeshProUGUI>();
+            lbl.font      = font;
+            lbl.text      = "🔊";
+            lbl.fontSize  = 40f;
+            lbl.alignment = TMPro.TextAlignmentOptions.Center;
+            lbl.color     = Color.white;
+        }
+
+        if (infoPanelAudioBtn != null)
+        {
+            infoPanelAudioBtn.onClick.RemoveAllListeners();
+            var clip = cfg.narrationClip;
+            infoPanelAudioBtn.onClick.AddListener(() =>
+            {
+                if (_panelAudio != null && clip != null)
+                {
+                    _panelAudio.Stop();
+                    _panelAudio.clip = clip;
+                    BackgroundMusic.Duck();
+                    _panelAudio.Play();
+                }
+            });
+        }
     }
 
     void CloseInfoPanel()
     {
+        BackgroundMusic.Unduck();
         StartCoroutine(AnimatePanel(false, () =>
         {
             if (infoPanel  != null) infoPanel.SetActive(false);

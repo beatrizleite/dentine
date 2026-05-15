@@ -199,7 +199,9 @@ public class QuizManager : MonoBehaviour
             }
             
             audioSource.clip = currentLevelData.questions[currentQuestionIndex].questionAudio;
-            audioSource.Play();
+            BackgroundMusic.Duck();
+        audioSource.Play();
+        StartCoroutine(UnduckWhenDone(audioSource));
         }
     }
 
@@ -293,6 +295,12 @@ public class QuizManager : MonoBehaviour
     public static int GetSavedStars(string levelName)
     {
         return PlayerPrefs.GetInt(levelName + "_Stars", 0);
+    }
+
+    IEnumerator UnduckWhenDone(AudioSource src)
+    {
+        yield return new WaitWhile(() => src != null && src.isPlaying);
+        BackgroundMusic.Unduck();
     }
 
     void ContinueToNextLevel()
