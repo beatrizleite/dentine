@@ -84,6 +84,51 @@ public class Card : MonoBehaviour, IPointerClickHandler
         glowSR.color = new Color(1f, 1f, 1f, 0f);   // reset to transparent white
     }
 
+    /// Feedback de par errado: flash vermelho com abanão amortecido, igual ao do tutorial.
+    public const float MismatchDuration = 0.65f;
+
+    public void MismatchFlash() => StartCoroutine(RedShake());
+
+    IEnumerator RedShake()
+    {
+        if (glowSR == null) yield break;
+
+        glowSR.color = new Color(0.92f, 0.18f, 0.18f, 0f);
+        glowSR.enabled = true;
+        Vector3 basePos = transform.position;
+
+        // Fade in do vermelho
+        float t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime / 0.15f;
+            var c = glowSR.color; c.a = Mathf.SmoothStep(0f, 0.6f, Mathf.Clamp01(t)); glowSR.color = c;
+            yield return null;
+        }
+
+        // Abanão horizontal amortecido
+        float dur = 0.35f, amp = 0.12f, freq = 30f, el = 0f;
+        while (el < dur)
+        {
+            el += Time.deltaTime;
+            float off = Mathf.Sin(el * freq) * amp * (1f - el / dur);
+            transform.position = basePos + new Vector3(off, 0f, 0f);
+            yield return null;
+        }
+        transform.position = basePos;
+
+        // Fade out
+        t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime / 0.15f;
+            var c = glowSR.color; c.a = Mathf.Lerp(0.6f, 0f, Mathf.Clamp01(t)); glowSR.color = c;
+            yield return null;
+        }
+        glowSR.enabled = false;
+        glowSR.color = new Color(1f, 1f, 1f, 0f);
+    }
+
     public void OnPointerClick(PointerEventData _)
     {
         if (IsLocked) return;

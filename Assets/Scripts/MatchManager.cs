@@ -333,6 +333,10 @@ public class MatchManager : MonoBehaviour
         }
         else
         {
+            // Par errado: flash vermelho com abanão, como no tutorial, antes de virar as cartas
+            a.MismatchFlash();
+            b.MismatchFlash();
+            yield return new WaitForSeconds(Card.MismatchDuration);
             a.FlipDown();
             b.FlipDown(() => locked = false);
         }

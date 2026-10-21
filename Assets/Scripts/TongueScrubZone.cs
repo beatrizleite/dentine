@@ -21,7 +21,13 @@ public class TongueScrubZone : MonoBehaviour
     bool cleaned;
 
     void OnEnable()  { s_total++; }
-    void OnDisable() { if (s_total > 0) s_total--; }
+    void OnDisable()
+    {
+        if (s_total > 0) s_total--;
+        // Fim da cena: todas as zonas foram desativadas. Repor o contador de zonas limpas
+        // para que repetir o nível na mesma sessão comece do zero.
+        if (s_total == 0) s_cleaned = 0;
+    }
     void Awake()     { col = GetComponent<Collider2D>(); }
     void Start()     { BuildFoamChild(); }
 

@@ -136,7 +136,23 @@ public class FoodDrag : MonoBehaviour
         _isLocked  = true;
         _isDragging = false;
         if (_sr != null) _sr.color = Color.red;
+        StartCoroutine(WrongShake());
         Invoke(nameof(ResetToStart), 0.5f);
+    }
+
+    // Abanão amortecido enquanto o alimento está vermelho, antes de voltar ao início
+    System.Collections.IEnumerator WrongShake()
+    {
+        Vector3 basePos = transform.position;
+        float dur = 0.4f, amp = 0.15f, freq = 35f, el = 0f;
+        while (el < dur && _isLocked)
+        {
+            el += Time.deltaTime;
+            float off = Mathf.Sin(el * freq) * amp * (1f - el / dur);
+            transform.position = basePos + new Vector3(off, 0f, 0f);
+            yield return null;
+        }
+        if (_isLocked) transform.position = basePos;
     }
 
     void ResetToStart()
