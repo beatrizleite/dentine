@@ -1,0 +1,12 @@
+# ninja log v5
+2	462	1777386643191831930	FramePacing/CMakeFiles/swappywrapper.dir/UnitySwappyWrapper.cpp.o	dd3241e8bee45afc
+464	654	1777386643364203924	/Users/ctw04561/Project/uni/dentine-game/Dentine/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/6xj6j6u6/obj/arm64-v8a/libswappywrapper.so	1b25a29ad0168af0
+1	940	1777386643665480828	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	bd87f419c23b31de
+1	955	1777386643677229945	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	f79f4f0da2aa8cc8
+0	971	1777386643695803873	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	fc8880cc73917891
+1	975	1777386643697139669	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	1d6d5d8bd21a4151
+0	1010	1777386643734628360	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	af5a531d72e7d20b
+1	1096	1777386643820210063	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	c505aef598788837
+1	1141	1777386643863411145	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	bb1fab33c1b8e0d9
+0	1193	1777386643917177882	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	78d2605a399c7f18
+1193	1304	1777386644031810377	/Users/ctw04561/Project/uni/dentine-game/Dentine/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/RelWithDebInfo/6xj6j6u6/obj/arm64-v8a/libgame.so	90d554fe02195d77

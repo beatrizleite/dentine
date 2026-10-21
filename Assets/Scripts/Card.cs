@@ -1,0 +1,224 @@
+using UnityEngine;
+using UnityEngine.EventSystems;
+using System.Collections;
+
+public class Card : MonoBehaviour, IPointerClickHandler
+{
+    public int ToolId { get; private set; }
+    public bool IsUp => state == State.FaceUp || state == State.Matched;
+    public bool IsLocked => state == State.Flipping || state == State.Matched;
+
+    [HideInInspector] public SpriteRenderer backSR;
+    [HideInInspector] public SpriteRenderer frontSR;
+    [HideInInspector] public SpriteRenderer shadowSR;
+    [HideInInspector] public SpriteRenderer glowSR;
+
+    public float flipDuration = 0.35f;
+    public float shadowOffsetX = 0.07f;
+    public float shadowOffsetY = -0.07f;
+
+    enum State { FaceDown, Flipping, FaceUp, Matched }
+    State state = State.FaceDown;
+
+    public void Initialise(int toolId, Sprite front)
+    {
+        ToolId = toolId;
+        frontSR.sprite = front;
+        frontSR.enabled = false;
+        backSR.enabled = true;
+        glowSR.enabled = false;
+        state = State.FaceDown;
+        transform.localScale = Vector3.one;
+    }
+
+    public void FlipUp(System.Action done = null)
+    {
+        if (state != State.FaceDown) { done?.Invoke(); return; }
+        StartCoroutine(DoFlip(true, done));
+    }
+
+    public void FlipDown(System.Action done = null)
+    {
+        if (state != State.FaceUp) { done?.Invoke(); return; }
+        StartCoroutine(DoFlip(false, done));
+    }
+
+    public void SetMatched()
+    {
+        state = State.Matched;
+        StartCoroutine(GreenFlash());
+    }
+
+    IEnumerator GreenFlash()
+    {
+        if (glowSR == null) yield break;
+
+        // Set green colour
+        glowSR.color = new Color(0.18f, 0.85f, 0.28f, 0f);
+        glowSR.enabled = true;
+
+        // Bounce scale + fade in
+        float t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime / 0.20f;
+            float e = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t));
+            float s = 1f + Mathf.Sin(Mathf.Clamp01(t) * Mathf.PI) * 0.08f;
+            transform.localScale = new Vector3(s, s, 1f);
+            var c = glowSR.color; c.a = e * 0.65f; glowSR.color = c;
+            yield return null;
+        }
+        transform.localScale = Vector3.one;
+
+        yield return new WaitForSeconds(0.45f);
+
+        // Fade out — leave card clean
+        t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime / 0.30f;
+            var c = glowSR.color; c.a = Mathf.Lerp(0.65f, 0f, Mathf.Clamp01(t)); glowSR.color = c;
+            yield return null;
+        }
+        glowSR.enabled = false;
+        glowSR.color = new Color(1f, 1f, 1f, 0f);   // reset to transparent white
+    }
+
+    /// Feedback de par errado: flash vermelho com abanão amortecido, igual ao do tutorial.
+    public const float MismatchDuration = 0.65f;
+
+    public void MismatchFlash() => StartCoroutine(RedShake());
+
+    IEnumerator RedShake()
+    {
+        if (glowSR == null) yield break;
+
+        glowSR.color = new Color(0.92f, 0.18f, 0.18f, 0f);
+        glowSR.enabled = true;
+        Vector3 basePos = transform.position;
+
+        // Fade in do vermelho
+        float t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime / 0.15f;
+            var c = glowSR.color; c.a = Mathf.SmoothStep(0f, 0.6f, Mathf.Clamp01(t)); glowSR.color = c;
+            yield return null;
+        }
+
+        // Abanão horizontal amortecido
+        float dur = 0.35f, amp = 0.12f, freq = 30f, el = 0f;
+        while (el < dur)
+        {
+            el += Time.deltaTime;
+            float off = Mathf.Sin(el * freq) * amp * (1f - el / dur);
+            transform.position = basePos + new Vector3(off, 0f, 0f);
+            yield return null;
+        }
+        transform.position = basePos;
+
+        // Fade out
+        t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime / 0.15f;
+            var c = glowSR.color; c.a = Mathf.Lerp(0.6f, 0f, Mathf.Clamp01(t)); glowSR.color = c;
+            yield return null;
+        }
+        glowSR.enabled = false;
+        glowSR.color = new Color(1f, 1f, 1f, 0f);
+    }
+
+    public void OnPointerClick(PointerEventData _)
+    {
+        if (IsLocked) return;
+        MatchManager.instance?.OnCardClicked(this);
+    }
+
+    IEnumerator DoFlip(bool toFront, System.Action done)
+    {
+        state = State.Flipping;
+        float half = flipDuration * 0.5f;
+
+        // First half: collapse X (ease-in cubic)
+        float t = 0f;
+        Vector3 baseScale = new Vector3(1f, 1f, 1f);
+        while (t < 1f)
+        {
+            t += Time.deltaTime / half;
+            float e = t * t * t;                        // ease-in cubic
+            float xScale = Mathf.Lerp(1f, 0f, Mathf.Clamp01(e));
+            float yScale = Mathf.Lerp(1f, 0.92f, Mathf.Clamp01(t)); // slight squish = depth feel
+            transform.localScale = new Vector3(xScale, yScale, 1f);
+            shadowSR.transform.localScale = new Vector3(
+                Mathf.Lerp(1f, 0.6f, Mathf.Clamp01(t)), 1f, 1f);
+            yield return null;
+        }
+
+        // Swap faces
+        backSR.enabled = !toFront;
+        frontSR.enabled = toFront;
+
+        // Second half: expand X (ease-out cubic)
+        t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime / half;
+            float e = 1f - Mathf.Pow(1f - Mathf.Clamp01(t), 3f); // ease-out cubic
+            float xScale = Mathf.Lerp(0f, 1f, e);
+            float yScale = Mathf.Lerp(0.92f, 1f, Mathf.Clamp01(t));
+            transform.localScale = new Vector3(xScale, yScale, 1f);
+            shadowSR.transform.localScale = new Vector3(
+                Mathf.Lerp(0.6f, 1f, Mathf.Clamp01(t)), 1f, 1f);
+            yield return null;
+        }
+
+        transform.localScale = Vector3.one;
+        shadowSR.transform.localScale = Vector3.one;
+        state = toFront ? State.FaceUp : State.FaceDown;
+        done?.Invoke();
+    }
+
+    // PulseGlow removed — replaced by GreenFlash
+
+    /// Initialise showing the front face immediately (no animation).
+    public void InitialiseFaceUp(int toolId, Sprite front)
+    {
+        ToolId = toolId;
+        frontSR.sprite = front;
+        frontSR.enabled = true;
+        backSR.enabled = false;
+        glowSR.enabled = false;
+        state = State.FaceUp;
+        transform.localScale = Vector3.one;
+    }
+
+    /// Instantly put face-down (used at start before intro flip wave).
+    public void SetFaceDownImmediate()
+    {
+        frontSR.enabled = false;
+        backSR.enabled = true;
+        state = State.FaceDown;
+        transform.localScale = Vector3.one;
+    }
+
+    /// Animate card sliding to a new world position with a slight arc.
+    public Coroutine SlideTo(Vector3 target, float duration, float arcHeight = 0.8f)
+        => StartCoroutine(DoSlide(target, duration, arcHeight));
+
+    IEnumerator DoSlide(Vector3 target, float duration, float arcHeight)
+    {
+        Vector3 start = transform.position;
+        float t = 0f;
+        while (t < 1f)
+        {
+            t += Time.deltaTime / Mathf.Max(duration, 0.01f);
+            float e = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(t));
+            float up = Mathf.Sin(Mathf.Clamp01(t) * Mathf.PI) * arcHeight;
+            transform.position = Vector3.Lerp(start, target, e) + Vector3.up * up;
+            yield return null;
+        }
+        transform.position = target;
+    }
+
+}
