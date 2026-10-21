@@ -1,6 +1,6 @@
 # Dentine
 
-![GitHub Release](https://img.shields.io/github/v/release/beatrizleite/dentine)
+[![GitHub Pre-Release](https://img.shields.io/github/v/release/beatrizleite/dentine?include_prereleases&label=pre-release)](https://github.com/beatrizleite/dentine/releases)
 
 Dentine is a mobile serious game that raises oral health awareness among children aged 3 to 5. It was designed for pre-literate children: the gameplay relies on images, animation, colour-coded feedback and recorded narration in European Portuguese rather than written instructions.
 
