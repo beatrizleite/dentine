@@ -239,7 +239,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28fd4258b794440169389557572c197e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToothScrubZone
-  requiredDistance: 2
+  requiredDistance: 6
   minSpeed: 0.25
   foamSprite: {fileID: 21300000, guid: a9c1baa1d5f444d1aa15aac94b274ae4, type: 3}
 --- !u!61 &39335521
@@ -333,7 +333,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28fd4258b794440169389557572c197e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToothScrubZone
-  requiredDistance: 2
+  requiredDistance: 6
   minSpeed: 0.25
   foamSprite: {fileID: 21300000, guid: a9c1baa1d5f444d1aa15aac94b274ae4, type: 3}
 --- !u!61 &81859038
@@ -564,7 +564,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28fd4258b794440169389557572c197e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToothScrubZone
-  requiredDistance: 2
+  requiredDistance: 6
   minSpeed: 0.25
   foamSprite: {fileID: 21300000, guid: a9c1baa1d5f444d1aa15aac94b274ae4, type: 3}
 --- !u!61 &168397031
@@ -930,7 +930,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28fd4258b794440169389557572c197e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToothScrubZone
-  requiredDistance: 2
+  requiredDistance: 6
   minSpeed: 0.25
   foamSprite: {fileID: 21300000, guid: a9c1baa1d5f444d1aa15aac94b274ae4, type: 3}
 --- !u!61 &272486864
@@ -1024,7 +1024,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28fd4258b794440169389557572c197e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToothScrubZone
-  requiredDistance: 2
+  requiredDistance: 6
   minSpeed: 0.25
   foamSprite: {fileID: 21300000, guid: a9c1baa1d5f444d1aa15aac94b274ae4, type: 3}
 --- !u!61 &283573323
@@ -1223,7 +1223,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28fd4258b794440169389557572c197e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToothScrubZone
-  requiredDistance: 2
+  requiredDistance: 6
   minSpeed: 0.25
   foamSprite: {fileID: 21300000, guid: a9c1baa1d5f444d1aa15aac94b274ae4, type: 3}
 --- !u!61 &319212201
@@ -1610,7 +1610,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28fd4258b794440169389557572c197e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToothScrubZone
-  requiredDistance: 2
+  requiredDistance: 6
   minSpeed: 0.25
   foamSprite: {fileID: 21300000, guid: a9c1baa1d5f444d1aa15aac94b274ae4, type: 3}
 --- !u!61 &478501325
@@ -1704,7 +1704,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28fd4258b794440169389557572c197e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToothScrubZone
-  requiredDistance: 2
+  requiredDistance: 6
   minSpeed: 0.25
   foamSprite: {fileID: 21300000, guid: a9c1baa1d5f444d1aa15aac94b274ae4, type: 3}
 --- !u!61 &500921354
@@ -2178,7 +2178,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28fd4258b794440169389557572c197e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToothScrubZone
-  requiredDistance: 2
+  requiredDistance: 6
   minSpeed: 0.25
   foamSprite: {fileID: 21300000, guid: a9c1baa1d5f444d1aa15aac94b274ae4, type: 3}
 --- !u!61 &628857352
@@ -2272,7 +2272,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28fd4258b794440169389557572c197e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToothScrubZone
-  requiredDistance: 2
+  requiredDistance: 6
   minSpeed: 0.25
   foamSprite: {fileID: 21300000, guid: a9c1baa1d5f444d1aa15aac94b274ae4, type: 3}
 --- !u!61 &647310608
@@ -3378,7 +3378,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28fd4258b794440169389557572c197e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToothScrubZone
-  requiredDistance: 2
+  requiredDistance: 6
   minSpeed: 0.25
   foamSprite: {fileID: 21300000, guid: a9c1baa1d5f444d1aa15aac94b274ae4, type: 3}
 --- !u!61 &1146142812
@@ -3612,7 +3612,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28fd4258b794440169389557572c197e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToothScrubZone
-  requiredDistance: 2
+  requiredDistance: 6
   minSpeed: 0.25
   foamSprite: {fileID: 21300000, guid: a9c1baa1d5f444d1aa15aac94b274ae4, type: 3}
 --- !u!61 &1185951111
@@ -4011,7 +4011,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28fd4258b794440169389557572c197e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToothScrubZone
-  requiredDistance: 2
+  requiredDistance: 6
   minSpeed: 0.25
   foamSprite: {fileID: 21300000, guid: a9c1baa1d5f444d1aa15aac94b274ae4, type: 3}
 --- !u!61 &1522034137
@@ -4248,7 +4248,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28fd4258b794440169389557572c197e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToothScrubZone
-  requiredDistance: 2
+  requiredDistance: 6
   minSpeed: 0.25
   foamSprite: {fileID: 21300000, guid: a9c1baa1d5f444d1aa15aac94b274ae4, type: 3}
 --- !u!61 &1608510824
@@ -4599,7 +4599,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28fd4258b794440169389557572c197e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToothScrubZone
-  requiredDistance: 2
+  requiredDistance: 6
   minSpeed: 0.25
   foamSprite: {fileID: 21300000, guid: a9c1baa1d5f444d1aa15aac94b274ae4, type: 3}
 --- !u!61 &1638298002
@@ -5362,7 +5362,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 28fd4258b794440169389557572c197e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ToothScrubZone
-  requiredDistance: 2
+  requiredDistance: 6
   minSpeed: 0.25
   foamSprite: {fileID: 21300000, guid: a9c1baa1d5f444d1aa15aac94b274ae4, type: 3}
 --- !u!61 &2049710902
